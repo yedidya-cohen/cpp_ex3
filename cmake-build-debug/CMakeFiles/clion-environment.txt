@@ -1,0 +1,4 @@
+ToolSet: 3.4.10 (local)@C:\Users\yedid
+Options: 
+
+Options:-DCMAKE_MAKE_PROGRAM=/AppData/Local/Programs/CLion/bin/ninja/cygwin/x64/ninja.exe
