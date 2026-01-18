@@ -11,28 +11,28 @@
 class Patrol : public Ship{
 public:
 
-    Patrol(string name,double consumpsion,double fuel,double current_speed,double angle,Point position,
-           vector<shared_ptr<Port>> ports,int resistance);
+    Patrol(Data d,vector<weak_ptr<Port>> ports,double resistance);
     void update() override;
     void describe() const override;
-    void set_destination() override;
-    void set_course() override;
-    void wait_for_dock();//3 time steps -
-    void atteckd(bool win_lose);
+    void set_destination();
+    void set_course(double speed, double angle) override;
+    void wait_at_dock();//3 time steps -
+    void attcked(bool win_lose);
+    double get_resistance() const;
+    double get_force() const;
 
 private:
     struct where_to{
-        //TODO think about keep the size of array -D
         int curr;
         int start;
         bool r_l;
     };
-    static constexpr double maxCapacity = 900.0; //900,000 wtf?
-    static constexpr double maxVelocity = 15.0;
-    static constexpr double fuel_per_nm = 2000.0;
-    int resistance; //TODO resistance is int or double? -D
-    std::shared_ptr<Port> ports;//
-    std::shared_ptr<where_to> w_g; //dont know why pointer
+//    static constexpr double maxCapacity = 900.0; //900,000 wtf?
+//    static constexpr double maxVelocity = 15.0;
+//    static constexpr double fuel_per_nm = 2.0;
+    double resistance;
+    static vector<weak_ptr<Port>> ports;
+    where_to w_g;
 };
 
 

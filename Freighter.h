@@ -8,18 +8,22 @@ using namespace std;
 
 class Freighter: public Ship{
 public:
-    Freighter(string name, double consumpsion, double max_speed, double fuel, double current_speed, double angle, Port position, int max_capacity, int resistance, weak_ptr<Port> destination);
+    Freighter(Data d, int max_capacity, int resistance, weak_ptr<Port> destination);
     void update() override;
     void describe() const override;
-    void set_destination() override;
-    void set_course() override;
+    void set_destination();
+    void set_course(double speed, double angle) override;
     bool try_docking();
     void load();
+    void attcked(bool win_lose);
+    double get_resistance() const;
+    double get_force() const;
 
 private:
-    const int max_capacity, resistance;
+    //static constexpr double max_fuel = 500.0, max_velocity=40.0, waste_fuel = 1000.0
+    const int max_capacity;
+    double resistance;
     int cargo;
-    bool is_docked;
 };
 
 #endif

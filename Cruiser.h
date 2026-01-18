@@ -11,20 +11,18 @@
 
 class Cruiser: public Ship{
 public:
-
-    Cruiser();
+    Cruiser(Data d,double range,double force);
+    ~Cruiser() = default;
     void update() override;
     void describe() const override;
-    void set_destination() override;
-    void set_course() override;
-    void search_for_victims();
-    void attack(shared_ptr<Ship> s);
+    void set_course(double speed, double angle) override;
+    void attack(const weak_ptr<Ship>& s);
 
 private:
-    static constexpr double max_velocity = 75.0;
+    //static constexpr double max_velocity = 75.0;
     double range;
     double force;
-    shared_ptr<Ship> target;
+//    weak_ptr<Ship> target;
 
 
 };
