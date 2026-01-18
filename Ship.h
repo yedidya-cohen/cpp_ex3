@@ -34,7 +34,7 @@ public:
 
 protected:
     const string name;
-    const double consumpsion, max_speed;
+    const double consumpsion, max_speed;//TODO: i think also max fuel? -D
     double fuel, current_speed, angle;
     Point position;
     weak_ptr<Port> destination; //TODO: weak_ptr or shared_ptr?

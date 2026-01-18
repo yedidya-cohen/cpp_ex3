@@ -8,7 +8,7 @@ using namespace std;
 
 class Freighter: public Ship{
 public:
-    Freighter(string name, double consumpsion, double max_speed, double fuel, double current_speed, double angle, Port position, int max_capacity, int resistance, weak_ptr<Port> destination);
+    Freighter();
     void update() override;
     void describe() const override;
     void set_destination() override;

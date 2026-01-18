@@ -7,4 +7,10 @@ add_executable(ex3 main.cpp
         Ship.h
         Point.h
         Freighter.h
-        Port.h)
+        Port.h
+        Patrol.cpp
+        Patrol.h
+        Cruiser.cpp
+        Cruiser.h
+        Port.cpp
+)
