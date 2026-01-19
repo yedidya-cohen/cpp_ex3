@@ -3,30 +3,40 @@
 
 #include <string>
 #include <utility>
+#include <queue>
 #include "Point.h"
+#include "CivilianShip.h"
+
 using namespace std;
 
-class Port{ //TODO: need to describe? what else missing on Port? - maybe finish -D
+class Port{
 public:
-    Port(string name,const Point& pos ,double fuel_production, double fuel): name(std::move(name)), pos(pos), fuel_production(fuel_production), fuel(fuel){}
+    Port(string name,const Point& pos ,double fuel_production, double fuel): name(std::move(name)), pos(pos), fuel_production(fuel_production), fuel(fuel){
+
+    }
     void update(){
         fuel+=fuel_production;
+        if(!ship_q.empty()){
+            //TODO refuel - pop
+        }
     }
-    void describe();//TODO needed?
 
-    void decreace_fuel(double amount){//when a ship enter to port she ask how many to take and than decrease it
+    void add_to_queue(CivilianShip & s);
+
+    void decreace_fuel(double amount){
         fuel-=amount;
     }
+
     Point get_pos()const {return pos;}
     string get_name() const{return name;}
     double get_available_fuel() const {return fuel;}
 
 private:
-    string name;
+    const string name;
     const Point pos;
     const double fuel_production;
     double fuel;
-
+    queue<CivilianShip> ship_q;
 };
 
 #endif

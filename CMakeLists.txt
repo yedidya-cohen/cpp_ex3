@@ -15,4 +15,7 @@ add_executable(ex3 main.cpp
         Port.cpp
         CivilianShip.h
         Freighter.cpp
+        Model.h
+        Controller.h
+        View.h
 )

@@ -15,18 +15,14 @@ public:
     ~Cruiser() override = default;
     void update() override;
     void describe() const override;
-    void set_course(double speed, double angle) override;
-    void attack(const weak_ptr<CivilianShip>& s);
     void stop() override;
-    double get_force() const override;
+    void attack(const Ship& s);
+    void set_course(double speed, double angle) ;
+    double get_force() const;
 
 private:
-    //static constexpr double max_velocity = 75.0;
     double range;
     double force;
-//    weak_ptr<Ship> target;
-
-
 };
 
 
