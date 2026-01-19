@@ -13,4 +13,6 @@ add_executable(ex3 main.cpp
         Cruiser.cpp
         Cruiser.h
         Port.cpp
+        CivilianShip.h
+        Freighter.cpp
 )

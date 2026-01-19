@@ -6,6 +6,7 @@
 #include <memory>
 #include "Point.h"
 #include "Port.h"
+#include <iostream>
 #include <cmath>
 using namespace std;
 
@@ -32,7 +33,7 @@ class Ship{
 public:
     virtual ~Ship() = default; //abstract
 
-    Ship(Data d) :
+    explicit Ship(Data d) :
     name(std::move(d.name)), fuel(d.curr_fuel), consumpsion(d.consumpsion), max_speed(d.max_speed), max_fuel(d.max_fuel),
     current_speed(d.curr_speed), angle(d.angle), position(d.position) {state = STOPPED;}
 
@@ -45,7 +46,6 @@ public:
 
 
 protected:
-
     const string name;
     const double consumpsion, max_speed,max_fuel;
     double fuel, current_speed, angle;
@@ -53,6 +53,22 @@ protected:
     weak_ptr<Port> destination;
     ShipState state;
 
+    void move_by_point()
+    {
+        //TODO: check if outside boarder
+        double new_x = Ship::position.get_x() + Ship::current_speed * sin(angle);
+        double new_y = Ship::position.get_y() + Ship::current_speed * cos(angle);
+        Point p (new_x, new_y);
+        position = p;
+    }
+
+    void angle_to(const Point o)
+    {
+        double dx = o.get_x() - Ship::position.get_x();
+        double dy = o.get_y() - Ship::position.get_y();
+        double tmp = atan2(dy,dx) * 180 / M_PI;
+        angle = tmp > 0 ? tmp : 360 + tmp;
+    }
 
 };
 
