@@ -12,7 +12,6 @@ add_executable(ex3 main.cpp
         Patrol.h
         Cruiser.cpp
         Cruiser.h
-        Port.cpp
         CivilianShip.h
         Freighter.cpp
         Model.h

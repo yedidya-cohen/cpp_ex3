@@ -32,6 +32,9 @@ public:
     explicit Ship(const Data& d):name(d.name),curr_speed(d.curr_speed)
         ,angle(d.angle),max_speed(d.max_speed), position(d.pos),state(d.state) {}
 
+    static inline double calc_dist(const Ship& s1,const Ship& s2){
+        return sqrt( pow(s1.position.get_x()-s2.position.get_x(),2) + pow(s1.position.get_y()-s2.position.get_y(),2));
+    }
 
     virtual void update() = 0;
     virtual void describe() const = 0;

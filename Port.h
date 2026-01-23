@@ -17,18 +17,21 @@ public:
     void update(){
         fuel+=fuel_production;
         if(!ship_q.empty()){
-            //TODO refuel - pop
+            CivilianShip s = ship_q.pop();
+
         }
     }
 
-    void add_to_queue(CivilianShip & s);
+    void add_to_queue(CivilianShip& s) {
+        ship_q.push(s);
+    }
 
     void decreace_fuel(double amount){
         fuel-=amount;
     }
 
     Point get_pos()const {return pos;}
-    string get_name() const{return name;}
+    string get_name() const {return name;}
     double get_available_fuel() const {return fuel;}
 
 private:
@@ -36,7 +39,7 @@ private:
     const Point pos;
     const double fuel_production;
     double fuel;
-    queue<CivilianShip> ship_q;
+    queue<CivilianShip> ship_q{};
 };
 
 #endif

@@ -3,7 +3,7 @@
 #include "Cruiser.h"
 
 
-Cruiser::Cruiser(Data d, double range, double force): Ship(std::move(d)), range(range), force(force){
+Cruiser::Cruiser(const Data& d, double range, double force): Ship(d), range(range), force(force){
 
 }
 //pirates!
@@ -13,7 +13,7 @@ void Cruiser::update() {
 }
 
 void Cruiser::set_course(double speed, double angle) {
-    current_speed = speed;
+    curr_speed = speed;
     this->angle = angle;
 }
 
@@ -21,17 +21,18 @@ void Cruiser::describe() const {
     std::cout << "i am a pirate! AAARRRRRRR";
 }
 
-void Cruiser::attack(const weak_ptr<CivilianShip>& s) {
-    if (auto target = s.lock()){
-        if (force > target->get_resistance()){
-            target->attacked(false);
+void Cruiser::attack(CivilianShip& s) {
+    if (calc_dist(*this,s) <= range){
+        if (force > s.get_resistance()){
+            s.attacked(false);
+            force++;
         }else{
-            target->attacked(true);
-            stop();
-            Ship::state = DEAD;
+            s.attacked(true);
+            force--;
         }
     }
 }
+
 
 
 void Cruiser::stop(){

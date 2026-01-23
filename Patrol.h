@@ -14,12 +14,13 @@ public:
     void update() override;
     void describe() const override;
     void stop() override;
-
+    void update_after_dock();
 private:
     struct where_to{
         int curr;
         int start;
-        bool r_l;
+        int len;
+        bool r_l; //true = right, false = left
     };
     enum PatrolState{REFUEL=0,DOCK=1,DEST=2,NONE=3};
     PatrolState patrolState;
