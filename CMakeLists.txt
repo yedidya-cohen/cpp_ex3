@@ -4,17 +4,9 @@ project(ex3)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(ex3 main.cpp
-        Ship.h
-        Point.h
-        Freighter.h
-        Port.h
-        Patrol.cpp
-        Patrol.h
-        Cruiser.cpp
-        Cruiser.h
-        CivilianShip.h
-        Freighter.cpp
-        Model.h
-        Controller.h
         View.h
+        Geometry.cpp
+        Geometry.h
+        View.cpp
+
 )

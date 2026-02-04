@@ -6,17 +6,17 @@ using namespace std;
 
 class Freighter: public CivilianShip{
 public:
-    Freighter(Data d, int max_capacity,int cargo, int resistance, Port& destination);
-    void update() override;
-    void describe() const override;
-    void set_destination(const Port& dest, double speed) override;
-    void set_course(double speed, double angle);
+    Freighter(Data d, int max_capacity,int cargo, Port& destination, int resistance,double max_fuel,double curr_fuel,double consumption);
+    // void update() override;
+    //void describe() const override;
+    // void set_destination(const Port& dest, double speed) override;
+    // void set_course(double speed, double angle);
 
 private:
-    //static constexpr double max_fuel = 500.0, max_velocity=40.0, waste_fuel = 1000.0
     const int max_capacity;
     int cargo;
     Port& dest;
+
 
     enum mission {
         None = 0,
@@ -24,6 +24,7 @@ private:
         Unload = 2,
         dock = 3
     };
+    queue<pair<Port,mission>> next_mission;
 };
 
 #endif

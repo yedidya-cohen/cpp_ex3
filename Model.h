@@ -17,26 +17,28 @@ public:
         return m;
     }
 
-    bool create_freighter_ship();
-    bool create_pirate_ship();
-    bool create_patrol_ship();
+    bool create_freighter_ship(const string& name, Point position, int resistance, int container_capacity);
+    bool create_patrol_ship(const string& name, Point position, int resistance);
+    bool create_pirate_ship(const string& name, Point position, int attack_force, int attack_range);
+
     bool create_port();
 
     void status();
     void update();
+    void sort_by_print();
 
-    void course(string& ship_name,double angle, double speed);
-    void position(string& ship_name, Point& p, double speed);
-    void destination(string& ship_name, string& name, double speed);
-
-    void load_at(string& ship_name, string& port_name);
-    void unload_at(string& ship_name, string& port_name, int amount);
-    void dock_at(string& ship_name, string& port_name);
-    void attack(string& ship_name, string& ship_target);
-    void refuel(string& ship_name);
-    void stop(string& ship_name);
-
-    const Port& get_port(int index) const;
+    // void course(string& ship_name,double angle, double speed);
+    // void position(string& ship_name, Point& p, double speed);
+    // void destination(string& ship_name, string& name, double speed);
+    //
+    // void load_at(string& ship_name, string& port_name);
+    // void unload_at(string& ship_name, string& port_name, int amount);
+    // void dock_at(string& ship_name, string& port_name);
+    // void attack(string& ship_name, string& ship_target);
+    // void refuel(string& ship_name);
+    // void stop(string& ship_name);
+    //
+    // const Port& get_port(int index) const;
 
 private:
     Model() = default; //singleton

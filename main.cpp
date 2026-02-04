@@ -1,6 +1,7 @@
 #include <iostream>
-
+#include  "View.h"
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    const View v (25,2.0,{-10,-10});
+    v.draw();
     return 0;
 }
