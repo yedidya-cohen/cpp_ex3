@@ -1,7 +1,7 @@
 
 #include "Patrol.h"
 
-Patrol::Patrol(Data d,double fuel, double max_fuel, double consumption, double resistance)
+Patrol::Patrol(Data& d,double fuel, double max_fuel, double consumption, double resistance)
         : CivilianShip(d, fuel, max_fuel, consumption, resistance),
           patrolState(NONE),
           current_target(nullptr) {

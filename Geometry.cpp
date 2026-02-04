@@ -66,8 +66,14 @@ void Point::print() const
 }
 
 bool Point::operator==(const Point & rhs)
-{
-    return x == rhs.x && y == rhs.y;
+{//nm
+
+    return abs(x - rhs.x) < 0.1 && abs(y - rhs.y) < 0.1;
 }
 
+double dist(const Point& p1,const Point& p2) {
+    const double dx = p2.x - p1.x;
+    const double dy = p2.y - p1.y;
+    return std::sqrt(dx*dx + dy*dy);
+}
 

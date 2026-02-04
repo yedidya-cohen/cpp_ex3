@@ -3,14 +3,44 @@
 
 #include "Ship.h"
 
+
+
 class CivilianShip : public Ship
 {
 public:
     ~CivilianShip() override = default; //abstract
-    explicit CivilianShip(Data d,double fuel, double max_fuel, double consumption, double resistance):
-    Ship(d), curr_fuel(fuel), resistance(resistance), max_fuel(max_fuel), consumption(consumption) {}
+    explicit CivilianShip(Data& d,double fuel, double max_fuel, double consumption, double resistance):
+    Ship(d), curr_fuel(fuel), resistance(resistance), max_fuel(max_fuel), consumption(consumption), curr_port("",{0,0},0,0) {}
 
-    // double get_resistance() const {return resistance;};
+
+
+    void dock_at(Port& p) {
+        if (position == p.get_position()) {
+            position = p.get_position();
+            state = DOCKED;
+            curr_port = p;
+            curr_speed=0;
+        }
+    }
+    void refuel() {
+        if (state == DOCKED) {
+            curr_port.add_to_queue(*this);
+            state = W_REFUELING;
+        }
+    }
+
+    void for_port() { //for port after refuel
+        if (state == W_REFUELING) {
+            state = DOCKED;
+        }
+    }
+
+    void been_attacked(bool win_lose) { //true mean lose
+        win_lose ? resistance--:resistance++;
+    }
+
+    double get_resistance() const {return resistance;};
+    //
     // void attacked(bool win_lose);
     // virtual void set_destination(const Port& dest, double speed) = 0;
     // virtual void refuel() = 0;
@@ -32,11 +62,9 @@ public:
 
 private:
     double curr_fuel, resistance;
-    const double max_fuel, consumption;
+    double max_fuel, consumption;
+    Port curr_port;
 };
-//
-// void CivilianShip::attacked(bool win_lose) {
-//     win_lose ? resistance--:resistance++;
-// }
+
 
 #endif

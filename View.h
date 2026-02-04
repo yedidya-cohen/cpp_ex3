@@ -4,6 +4,7 @@
 
 
 #include "Geometry.h"
+#include "Model.h"
 
 class View {
 public:

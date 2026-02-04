@@ -36,7 +36,7 @@ void View::draw() const {
     // Initialize grid with ". "
     vector<vector<string>> grid(grid_size, vector<string>(grid_size, ". "));
 
-    //auto& model = Model::get_instance();
+    auto& model = Model::get_instance();
     
     // Helper to mark entities on grid
     auto mark_on_grid = [&](const string& name, Point p) {
@@ -56,11 +56,11 @@ void View::draw() const {
     // Note: The actual iteration over ships/pirates/ports requires Model to expose them.
     // Based on Model.h, they are private. Assuming friend class or getters exist:
     // For the sake of completing the View logic:
-    /*
+
     for (const auto& s : model.get_ships()) mark_on_grid(s.get_name(), s.get_position());
     for (const auto& p : model.get_pirates()) mark_on_grid(p.get_name(), p.get_position());
     for (const auto& po : model.get_ports()) mark_on_grid(po.get_name(), po.get_position());
-    */
+
 
     // Drawing the grid from top (max Y) to bottom
     for (int j = grid_size - 1; j >= 0; --j) {

@@ -11,12 +11,15 @@
 
 class Patrol : public CivilianShip{
 public:
-    Patrol(Data d,double fuel, double max_fuel, double consumption, double resistance);
+    Patrol(Data& d,double fuel, double max_fuel, double consumption, double resistance);
+    Patrol(const Patrol& other) = default;
+    Patrol& operator=(const Patrol& other) = default;
+
     // void update() override;
     // void describe() const override;
-    // void stop() override;
-    // void update_after_dock();
-    // void set_destination(weak_ptr<Port> port, double speed);
+
+    //data structure
+
 private:
     struct where_to {
         int curr;

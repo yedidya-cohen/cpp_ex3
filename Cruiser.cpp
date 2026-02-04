@@ -3,9 +3,7 @@
 #include "Cruiser.h"
 
 
-Cruiser::Cruiser(const Data& d, double range, double force): Ship(d), range(range), force(force){
-
-}
+Cruiser::Cruiser(const Data& d, double range, double force): Ship(d), range(range), force(force){}
 //pirates!
 //
 // void Cruiser::update() {
@@ -21,27 +19,19 @@ Cruiser::Cruiser(const Data& d, double range, double force): Ship(d), range(rang
 //     std::cout << "i am a pirate! AAARRRRRRR";
 // }
 //
-// void Cruiser::attack(CivilianShip& s) {
-//     if (calc_dist(*this,s) <= range){
-//         if (force > s.get_resistance()){
-//             s.attacked(false);
-//             force++;
-//         }else{
-//             s.attacked(true);
-//             force--;
-//         }
-//     }
-// }
-//
-//
-//
-// void Cruiser::stop(){
-//     Ship::state = STOPPED;
-//     curr_speed = 0;
-//     angle = 0;
-// }
-//
-// double Cruiser::get_force() const{ return force;}
+void Cruiser::attack(CivilianShip& s) {
+    if (dist(this->get_position(),s.get_position()) <= range){
+        if (force > s.get_resistance()){
+            s.been_attacked(false);
+            force++;
+        }else{
+            s.been_attacked(true);
+            force--;
+        }
+    }
+}
+
+double Cruiser::get_force() const{ return force;}
 
 
 

@@ -1,8 +1,8 @@
 #include "Freighter.h"
 
 
-Freighter::Freighter(Data d, int max_capacity, int cargo, Port &destination,
-    int resistance, double max_fuel, double curr_fuel, double consumption):CivilianShip(d,curr_fuel,max_fuel,consumption,resistance),
+Freighter::Freighter(Data d,double fuel, double max_fuel, double consumption, double resistance ,int max_capacity,int cargo, Port& destination)
+:CivilianShip(d,fuel,max_fuel,consumption,resistance),
 max_capacity(max_capacity),cargo(cargo),dest(destination){}
 
 //

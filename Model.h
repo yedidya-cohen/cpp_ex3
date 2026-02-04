@@ -5,8 +5,8 @@
 #include "Patrol.h"
 #include "Cruiser.h"
 #include "Port.h"
-#include "Point.h"
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -17,15 +17,18 @@ public:
         return m;
     }
 
-    bool create_freighter_ship(const string& name, Point position, int resistance, int container_capacity);
-    bool create_patrol_ship(const string& name, Point position, int resistance);
-    bool create_pirate_ship(const string& name, Point position, int attack_force, int attack_range);
+    bool create_freighter_ship(Data d,double fuel, double max_fuel, double consumption, double resistance ,int max_capacity,int cargo, Port& destination);
+    bool create_patrol_ship(Data& d,double fuel, double max_fuel, double consumption, double resistance);
+    bool create_pirate_ship( Data& d,double range,double force);
 
-    bool create_port();
+    bool create_port(string name,const Point& pos ,double fuel_production, double fuel);
 
-    void status();
-    void update();
-    void sort_by_print();
+    const vector<CivilianShip>& get_ships() {return ships;}
+    const vector<Cruiser>& get_pirates() {return pirates;}
+    const vector<Port>& get_ports() {return ports;}
+
+    // void status();
+    // void update();
 
     // void course(string& ship_name,double angle, double speed);
     // void position(string& ship_name, Point& p, double speed);
@@ -47,9 +50,9 @@ private:
     vector<CivilianShip> ships;
     vector<Port> ports; //save by order for patrol
 
-    bool is_civil_exists(const string& o);
-    bool is_pirate_exists(const string& o);
-    bool is_port_exists(const string& o);
+    bool is_civil_exists(const string& o) const;
+    bool is_pirate_exists(const string& o) const;
+    bool is_port_exists(const string& o) const;
 
 };
 

@@ -9,6 +9,7 @@ using namespace std;
 // angle units conversion functions
 double to_radians(double theta_d);
 double to_degrees(double theta_r);
+
 // class declarations
 typedef struct Point {
     double x;
@@ -18,6 +19,8 @@ typedef struct Point {
     void print() const;
     bool operator==(const Point& rhs);
 } Point;
+
+double dist(const Point& p1,const Point& p2);
 struct Polar_vector;
 typedef struct Cartesian_vector {
     Cartesian_vector(const struct Polar_vector & pv);

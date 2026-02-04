@@ -6,11 +6,15 @@ using namespace std;
 
 class Freighter: public CivilianShip{
 public:
-    Freighter(Data d, int max_capacity,int cargo, Port& destination, int resistance,double max_fuel,double curr_fuel,double consumption);
+    Freighter(Data d,double fuel, double max_fuel, double consumption, double resistance ,int max_capacity,int cargo, Port& destination);
+    Freighter(const Freighter& other) = default;
+    Freighter& operator=(const Freighter& other) = default;
+
     // void update() override;
-    //void describe() const override;
-    // void set_destination(const Port& dest, double speed) override;
-    // void set_course(double speed, double angle);
+    // void describe() const override;
+
+    // void load_at(Port& dest);
+    // void unload_at(Port& dest);
 
 private:
     const int max_capacity;
