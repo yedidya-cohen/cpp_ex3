@@ -20,7 +20,7 @@ private:
     const int max_capacity;
     int cargo;
     Port& dest;
-
+   // vector<pair<string, int> (for loading and unloa
 
     enum mission {
         None = 0,

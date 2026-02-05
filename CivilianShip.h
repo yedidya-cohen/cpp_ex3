@@ -1,6 +1,7 @@
 #ifndef EX3_CIVILIANSHIP_H
 #define EX3_CIVILIANSHIP_H
 
+
 #include "Ship.h"
 
 
@@ -10,21 +11,25 @@ class CivilianShip : public Ship
 public:
     ~CivilianShip() override = default; //abstract
     explicit CivilianShip(Data& d,double fuel, double max_fuel, double consumption, double resistance):
-    Ship(d), curr_fuel(fuel), resistance(resistance), max_fuel(max_fuel), consumption(consumption), curr_port("",{0,0},0,0) {}
+    Ship(d), curr_fuel(fuel), resistance(resistance), max_fuel(max_fuel), consumption(consumption),
+        curr_port(Model::get_instance().defualt_port()) {}
 
 
 
-    void dock_at(Port& p) {
-        if (position == p.get_position()) {
-            position = p.get_position();
+    bool dock_at(shared_ptr<Port> p) {
+        if (position == p->get_position()) {
+            position = p->get_position();
             state = DOCKED;
             curr_port = p;
             curr_speed=0;
+            return true;
         }
+        return false;
     }
+
     void refuel() {
         if (state == DOCKED) {
-            curr_port.add_to_queue(*this);
+            curr_port->add_to_queue(*this);
             state = W_REFUELING;
         }
     }
@@ -36,6 +41,7 @@ public:
     }
 
     void been_attacked(bool win_lose) { //true mean lose
+        state = ShipState::STOPPED;
         win_lose ? resistance--:resistance++;
     }
 
@@ -60,10 +66,10 @@ public:
     //     }
     // }
 
-private:
+protected:
     double curr_fuel, resistance;
     double max_fuel, consumption;
-    Port curr_port;
+    shared_ptr<Port> curr_port;
 };
 
 

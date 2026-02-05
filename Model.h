@@ -23,9 +23,11 @@ public:
 
     bool create_port(string name,const Point& pos ,double fuel_production, double fuel);
 
-    const vector<CivilianShip>& get_ships() {return ships;}
-    const vector<Cruiser>& get_pirates() {return pirates;}
-    const vector<Port>& get_ports() {return ports;}
+    const vector<weak_ptr<CivilianShip>> get_ships() {return toWeakPtrVector(ships);}
+    const vector<weak_ptr<Cruiser>> get_pirates() {return toWeakPtrVector(pirates);}
+    const vector<weak_ptr<Port>> get_ports() {return toWeakPtrVector(ports);}
+
+    const shared_ptr<Port> get_port_by_name(const string& name);
 
     // void status();
     // void update();
@@ -43,17 +45,26 @@ public:
     //
     // const Port& get_port(int index) const;
 
+
+    bool attacking(const string& attacked, int force);
+    shared_ptr<Port> defualt_port();
+
 private:
     Model() = default; //singleton
     ~Model() = default;
-    vector<Cruiser> pirates;
-    vector<CivilianShip> ships;
-    vector<Port> ports; //save by order for patrol
+    vector<shared_ptr<Cruiser>> pirates;
+    vector<shared_ptr<CivilianShip>> ships;
+    vector<shared_ptr<Port>> ports; //save by order for patrol
 
     bool is_civil_exists(const string& o) const;
     bool is_pirate_exists(const string& o) const;
     bool is_port_exists(const string& o) const;
 
+    template<typename T>
+    std::vector<std::weak_ptr<T>> toWeakPtrVector(
+    const std::vector<std::shared_ptr<T>>& shared_vec);
 };
+
+
 
 #endif //EX3_MODEL_H

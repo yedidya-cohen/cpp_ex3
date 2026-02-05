@@ -8,6 +8,7 @@
 #include <iostream>
 #include <cmath>
 #include "Geometry.h"
+#include "Model.h"
 
 using namespace std;
 
@@ -72,7 +73,7 @@ public:
 
     }
 
-    void set_destination(Port& p, double speed) {
+    void set_destination(const Port& p, double speed) {
         Point p_dest = p.get_position();
         set_pos(p_dest,speed);
     }

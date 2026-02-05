@@ -18,6 +18,7 @@ typedef struct Point {
     Point();
     void print() const;
     bool operator==(const Point& rhs);
+    friend ostream& operator<<(ostream& o, const Point& p);
 } Point;
 
 double dist(const Point& p1,const Point& p2);
