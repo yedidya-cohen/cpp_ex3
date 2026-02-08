@@ -26,6 +26,11 @@ public:
         }
         return false;
     }
+    void virtual update() {
+        Ship::update();
+        curr_fuel -= consumption;
+        if (curr_fuel <= 0) {state = DEAD;}
+    }
 
     void refuel() {
         if (state == DOCKED) {

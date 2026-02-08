@@ -10,25 +10,27 @@ public:
     Freighter(const Freighter& other) = default;
     Freighter& operator=(const Freighter& other) = default;
 
-    // void update() override;
-    // void describe() const override;
+    void update() override;
+    void describe() const override;
+    void load_at(shared_ptr<Port>& p,int x=1);
+    void unload_at(shared_ptr<Port>& p, int amount);
 
-    // void load_at(Port& dest);
-    // void unload_at(Port& dest);
 
 private:
+    int is_exists(shared_ptr<Port>& p) const;
+    void update_cargo();
     const int max_capacity;
     int cargo;
-    Port& dest;
-   // vector<pair<string, int> (for loading and unloa
+    shared_ptr<Port> dest;
+    vector<pair<shared_ptr<Port>, int>>  missions;
 
-    enum mission {
-        None = 0,
-        Load = 1,
-        Unload = 2,
-        dock = 3
-    };
-    queue<pair<Port,mission>> next_mission;
+    // enum mission {
+    //     None = 0,
+    //     Load = 1,
+    //     Unload = 2,
+    //     dock = 3
+    // };
+    // queue<pair<Port,mission>> next_mission;
 };
 
 #endif

@@ -18,6 +18,7 @@ Cartesian_vector::Cartesian_vector(const Polar_vector& pv) {
     delta_x = pv.r * cos(pv.theta);
     delta_y = pv.r * sin(pv.theta);
 }
+
 Cartesian_vector::Cartesian_vector()
 {
     delta_x = 0.0;
@@ -79,4 +80,24 @@ double dist(const Point& p1,const Point& p2) {
 ostream& operator<<(ostream& o, const Point& p) {
     o << "(" << p.x << "," << p.y << ")";
     return o;
+}
+
+Point calculate_next_pos(Point start, double angle_rad, double speed) {
+
+
+    // 2. Create a polar vector for the movement
+    // Since time is exactly 1 hour, distance = speed * 1
+    Polar_vector move_vector;
+    move_vector.r = speed;
+    move_vector.theta = angle_rad;
+
+    // 3. Convert to Cartesian to get x/y offsets
+    Cartesian_vector delta(move_vector);
+
+    // 4. Apply the offset to the starting point
+    Point next_p;
+    next_p.x = start.x + delta.delta_x;
+    next_p.y = start.y + delta.delta_y;
+
+    return next_p;
 }

@@ -18,7 +18,6 @@ enum ShipState{
     W_REFUELING = 2,
     DEAD = 3,
     MOVING = 4,
-    ON_COURSE = 5
 };
 
 struct Data{
@@ -44,9 +43,15 @@ public:
     //     return sqrt( pow(s1.position.get_x()-s2.position.get_x(),2) + pow(s1.position.get_y()-s2.position.get_y(),2));
     // }
     //
-    // virtual void update() =0 ;
+
     // virtual void describe() const{}
     // virtual void stop() = 0;
+//move next step
+    virtual void update() {
+        //angel - radiants
+        //speed
+         position =  calculate_next_pos(position,rad_angle,curr_speed);
+    }
 
     //getters
     string get_name() const{return name;}

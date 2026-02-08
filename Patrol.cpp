@@ -24,7 +24,7 @@ void Patrol::update() {
         case DEAD:
             return;
         case MOVING:
-            Ship::update();// 1 hour pass
+            CivilianShip::update();// 1 hour pass
             if (dock_at(current_target)){
                 patrolState = W_REFUEL;
                 current_target = nullptr;

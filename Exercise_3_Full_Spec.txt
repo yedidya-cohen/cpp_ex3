@@ -1,0 +1,105 @@
+﻿Advanced Object-Oriented Programming, Fall 2025-26
+Homework Exercise No. 3
+Subject: Shipping Simulation in Global Lanes using MVC
+Submission Date: Thursday, 29/01/2026, 23:59
+Possible submission in pairs.
+Exercise Description
+This exercise deals with a time-dependent simulation of sea vessels, designed to use the Model-View-Controller (MVC) paradigm. You are required to provide an object-oriented solution in C++ and use a specific design pattern (The Singleton design pattern).
+1. Global Shipping Lanes Network
+The sailing space is defined using a 2D Euclidean space; the unit of measure is Nautical Mile (nm), and the assumption is that the space is infinite (no boundary conditions enforced, beyond storage limits of type double).
+* North is defined as the positive direction of the Y axis (0 degrees).
+* East is the positive direction of the X axis (90 degrees).
+* South is the negative direction of the Y axis (180 degrees).
+* West is the negative direction of the X axis (270 degrees).
+A vessel's location or destination is defined by a pair of coordinates, but sailing direction can be defined by an angle.
+2. Entities
+   * Port: A simulation object with a fixed location and fuel tanks (unlimited storage). It is responsible for unloading, loading, and refueling vessels. A port has a self-capability for fuel production, and no limit on container inventory. Its existence is determined at the simulation initialization stage.
+   * Freighter (Cargo Ship): Transports containers from port to port according to load and unload commands. It sails at a given speed between points subject to constant fuel consumption. Upon reaching an unloading port, it unloads the number of containers specified in the unload command. Upon reaching a loading port, it fills its cargo capacity to the maximum and strives to fill its fuel tank (depending on fuel stock at the port). Creation of the ship occurs during the simulation.
+   * Patrol Boat: Patrols between different ports in the maritime space, docks at them, and upon completing a route returns to the starting point. Creation of the ship occurs during the simulation.
+   * Cruiser (Pirate Ship): Attacks and robs freighters or attacks patrol boats; it is not allowed to dock at ports. Creation of the ship occurs during the simulation.
+3. MVC Components
+   * Model: A single object required to be defined as a Singleton. Its responsibility is to track the simulation world in all aspects, from time management to object storage. Specifically, it must hold all vessels and ports participating in the simulation via pointers and provide access services to them. Additionally, the object is responsible for providing update services to the View object.
+   * View: An object with a single responsibility: displaying the world map using ASCII-based graphics. Each object is represented on the map by the first two characters of its name. Information update is based on interaction with the Model.
+   * Controller: A single object responsible for managing interaction with the user and routing received inputs to the Model. This responsibility also includes error management in user inputs.
+4. Detailed Characterization of Simulation Components
+The simulation moves in discrete time steps controlled by commands. The world "freezes" at each time step until the next time transition. A time step transition occurs via a user command and includes updating all objects in the simulation.
+General Vessel Behavior
+A general vessel object can be in the following states:
+   1. Stopped: Initial state of every vessel.
+   2. Docked: Docked at a given port.
+   3. Dead in the water: Stuck at a given location after running out of fuel.
+   4. Moving to...: Moving to a location / Moving to a port / Moving on a specific course/direction.
+Required functionality for all vessels:
+   * Stop: Cancels the ship's destinations, resets speed, updates state to "Stopped".
+   * Set Position (position): Sets a sailing destination using coordinate pair, sets speed, updates state to "Moving to <destination position>".
+   * Set Course (course): Sets sailing direction using an angle, sets speed, updates state to "Moving on course...".
+   * Status Presentation: Printing vessel state including name, location, and sailing status.
+Freighter Specifics
+   * Status: Must specify fuel content, resistance (power), speed, and cargo scope (containers).
+   * Example: Freighter Emma at (22.93, 22.93), fuel: 490.0 kl, resistance: 8, Moving to PearlHarbor on course 225.00 deg, speed 10.00 nm/hr, Containers: 0, moving to loading destination
+   * Set Destination (destination): Sets destination port by name, sets speed, updates state to "Moving to <port name>".
+   * Docking: Occurs when distance to port is <= 0.1 nm. Resets speed, sets location to port location, updates state to "Docked". Takes 1 time step.
+   * Unloading: Occurs while docked. Transfers specific number of containers to port. Takes 1 time step. (If demand > stock, unload all and warn).
+   * Loading: Occurs while docked. Fills ship capacity. Takes 1 time step.
+   * Refueling: Occurs while docked. Fills fuel tank based on port stock (First Come First Served). Takes 1 time step.
+   * Stats: Fuel Tank: 500.0 kl (starts full). Max Speed: 40 nm/h. Consumption: 1000.0 Liters/nm. Has Cargo Capacity parameter and Resistance parameter.
+Patrol Boat Specifics
+   * Behavior: Patrols between ports automatically. Given a destination command to a port, it sails there, then to the nearest port to it, then to the nearest port it hasn't visited yet, and so on.
+   * Route Logic: Visit every port exactly once. After visiting all, returns automatically to the first port visited to close the loop (Hamiltonian path).
+   * Docking Routine (3 Time Steps):
+   1. Attempt to refuel.
+   2. Dock without activity (Shore leave).
+   3. Determine next destination.
+   * End of Route: Upon returning to start/end port, perform only docking and declare end of sailing.
+   * Stats: Fuel Tank: 900.0 kl (starts full). Max Speed: 15 nm/h. Consumption: 2000.0 Liters/hour. Resistance parameter: 10.
+Cruiser (Pirate) Specifics
+   * Stats: Defined by Attack Force and Range (nm). Fuel is NOT simulated. Max speed: 75 nm/h.
+   * Status: Must show name, location, Force, Course, Speed.
+   * Attack: Directed at a Freighter or Patrol Boat within range at the start of the time step.
+   * Calculation: Compare Attack Force vs. Target Resistance.
+   * Success (Force > Resistance):
+   * Freighter: Loses all cargo (0 containers). Pirate Force +1.
+   * Patrol Boat: Pirate Force +1, Patrol Resistance -1.
+   * Failure (Force <= Resistance):
+   * Freighter: Keeps cargo. Pirate Force -1.
+   * Patrol Boat: Pirate Force -1, Patrol Resistance +1.
+   * Outcome: If attack executed, target ship cancels all future commands and switches to "Stopped".
+5. Model Characterization
+   * Stores all simulation objects.
+   * Updates state of all elements in discrete 1-hour time steps.
+   * Default Port: Must create a port named "Nagoya" at (50, 5), Fuel: 1,000,000, Production: 1000/hour.
+6. Controller Characterization
+Manages user interaction. text processing order:
+   1. Check if command is exit.
+   2. Check if first word is a vessel name (Ship command).
+   3. Check if it is a Model or View command.
+View Commands:
+   * default: Restore map defaults.
+   * size <integer>: Set map size (6-30).
+   * zoom <double>: Set scale (nm per cell).
+   * pan <x> <y>: Set origin.
+   * show: Draw updated map.
+Model Commands:
+   * status: All objects describe their state.
+   * go: Update all objects by 1 hour.
+   * create <name> <type> <loc_x, loc_y> <resistance/force> [capacity/range]: Create new ship. Error if name exists.
+Ship Specific Commands:
+   * <name> course <angle> <speed>
+   * <name> position <x> <y> <speed>
+   * <name> destination <port_name> <speed> (Freighter/Patrol only)
+   * <name> load_at <port_name> (Freighter only)
+   * <name> unload_at <port_name> <amount> (Freighter only)
+   * <name> dock_at <port_name> (Freighter only)
+   * <name> attack <ship_name> (Cruiser only)
+   * <name> refuel (Freighter only)
+   * <name> stop
+7. View (Map) Characterization
+   * Square matrix (default 25x25).
+   * Cell represents range of (x,y). Size of cell determined by scale (default 2.0).
+   * Origin (0,0) is bottom-left corner.
+   * Representation: First two characters of object name. Empty cell is . .
+8. Input Format
+   * Input file (e.g., ports.dat) defines ports: Name (x, y) Fuel_Stock Production.
+   * Example: Valdez (20.00, 20.00) 100000 100
+   * Program usage: ./simNautica ports.dat
+   * Runtime: Prints Time X: Enter command:
