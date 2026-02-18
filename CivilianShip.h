@@ -1,56 +1,28 @@
 #ifndef EX3_CIVILIANSHIP_H
 #define EX3_CIVILIANSHIP_H
 
-
-#include "Ship.h"
-
-
+# include "Ship.h"
 
 class CivilianShip : public Ship
 {
 public:
+    explicit CivilianShip(Data& d,double fuel, double max_fuel, double consumption, double resistance);
     ~CivilianShip() override = default; //abstract
-    explicit CivilianShip(Data& d,double fuel, double max_fuel, double consumption, double resistance):
-    Ship(d), curr_fuel(fuel), resistance(resistance), max_fuel(max_fuel), consumption(consumption),
-        curr_port(Model::get_instance().defualt_port()) {}
 
 
+    bool dock_at(shared_ptr<Port> p);
+    void update() override;
 
-    bool dock_at(shared_ptr<Port> p) {
-        if (position == p->get_position()) {
-            position = p->get_position();
-            state = DOCKED;
-            curr_port = p;
-            curr_speed=0;
-            return true;
-        }
-        return false;
-    }
-    void virtual update() {
-        Ship::update();
-        curr_fuel -= consumption;
-        if (curr_fuel <= 0) {state = DEAD;}
-    }
+    double missing_fuel() const;
+    void add_fuel(double f);
 
-    void refuel() {
-        if (state == DOCKED) {
-            curr_port->add_to_queue(*this);
-            state = W_REFUELING;
-        }
-    }
+    void refuel();
 
-    void for_port() { //for port after refuel
-        if (state == W_REFUELING) {
-            state = DOCKED;
-        }
-    }
+    void for_port(); //for port after refuel
 
-    void been_attacked(bool win_lose) { //true mean lose
-        state = ShipState::STOPPED;
-        win_lose ? resistance--:resistance++;
-    }
+    void been_attacked(bool win_lose); //true mean lose
 
-    double get_resistance() const {return resistance;};
+    double get_resistance() const;
     //
     // void attacked(bool win_lose);
     // virtual void set_destination(const Port& dest, double speed) = 0;

@@ -4,32 +4,33 @@
 #include <string>
 #include <utility>
 #include <memory>
-#include "Port.h"
 #include <iostream>
 #include <cmath>
 #include "Geometry.h"
 #include "Model.h"
 
 using namespace std;
+class Port;
 
-enum ShipState{
-    STOPPED = 0,
-    DOCKED = 1,
-    W_REFUELING = 2,
-    DEAD = 3,
-    MOVING = 4,
-};
-
-struct Data{
-    string name;
-    double curr_speed,angle,max_speed;
-    Point pos;
-    ShipState state;
-};
 
 
 class Ship {
 public:
+    enum ShipState{
+        STOPPED = 0,
+        DOCKED = 1,
+        W_REFUELING = 2,
+        DEAD = 3,
+        MOVING = 4,
+    };
+
+    struct Data{
+        string name;
+        double curr_speed,angle,max_speed;
+        Point pos;
+        ShipState state;
+    };
+
     virtual ~Ship() = default; //abstract
 
     explicit Ship(const Data& d):name(d.name),curr_speed(d.curr_speed)
@@ -78,10 +79,7 @@ public:
 
     }
 
-    void set_destination(const Port& p, double speed) {
-        Point p_dest = p.get_position();
-        set_pos(p_dest,speed);
-    }
+    void set_destination(const Port& p, double speed);
 
     void set_state(const ShipState s) {
         if (state!=DEAD)

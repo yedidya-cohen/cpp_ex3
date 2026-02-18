@@ -7,6 +7,8 @@
 #include "Port.h"
 #include <vector>
 #include <algorithm>
+#include "Ship.h"
+
 
 using namespace std;
 
@@ -17,9 +19,9 @@ public:
         return m;
     }
 
-    bool create_freighter_ship(Data d,double fuel, double max_fuel, double consumption, double resistance ,int max_capacity,int cargo, Port& destination);
-    bool create_patrol_ship(Data& d,double fuel, double max_fuel, double consumption, double resistance);
-    bool create_pirate_ship( Data& d,double range,double force);
+    bool create_freighter_ship(Ship::Data& d,double fuel, double max_fuel, double consumption, double resistance ,int max_capacity,int cargo);
+    bool create_patrol_ship(Ship::Data& d,double fuel, double max_fuel, double consumption, double resistance);
+    bool create_pirate_ship( Ship::Data& d,double range,double force);
 
     bool create_port(string name,const Point& pos ,double fuel_production, double fuel);
 
@@ -28,9 +30,10 @@ public:
     const vector<weak_ptr<Port>> get_ports() {return toWeakPtrVector(ports);}
 
     const shared_ptr<Port> get_port_by_name(const string& name);
+    const shared_ptr<CivilianShip> get_ship_by_name(const string& name);
 
     // void status();
-    // void update();
+    void update();
 
     // void course(string& ship_name,double angle, double speed);
     // void position(string& ship_name, Point& p, double speed);
@@ -46,15 +49,16 @@ public:
     // const Port& get_port(int index) const;
 
 
-    bool attacking(const string& attacked, int force);
+    // bool attacking(const string& attacked, int force);
     shared_ptr<Port> defualt_port();
+    void add_to_refueling(const string& name, shared_ptr<Port> p);
 
 private:
     Model() = default; //singleton
     ~Model() = default;
     vector<shared_ptr<Cruiser>> pirates;
     vector<shared_ptr<CivilianShip>> ships;
-    vector<shared_ptr<Port>> ports; //save by order for patrol
+    vector<shared_ptr<Port>> ports;
 
     bool is_civil_exists(const string& o) const;
     bool is_pirate_exists(const string& o) const;

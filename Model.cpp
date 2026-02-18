@@ -3,13 +3,17 @@
 #include <string>
 #include "Geometry.h"
 
-// void Model::update() {
-//     for (auto& s: ships){s.update();}
-//     for (auto& p: pirates){p.update();}
-//     for (auto& p: ports){p.update();}
-//
-// }
 
+void Model::update() {
+    for (auto& s: ships){s->update();}
+    for (auto& p: pirates){p->update();}
+    for (auto& p: ports){p->update();}
+}
+
+shared_ptr<Port> Model::defualt_port() {
+    shared_ptr<Port> p = make_shared<Port>("", Point(-1,-1), -1, -1 );
+    return p;
+}
 
 
 // void Model::status() {
@@ -19,19 +23,19 @@
 // }
 
 
-bool Model::create_freighter_ship(Data d,double fuel, double max_fuel, double consumption, double resistance ,int max_capacity,int cargo, Port& destination) {
+bool Model::create_freighter_ship(Ship::Data& d,double fuel, double max_fuel, double consumption, double resistance ,int max_capacity,int cargo) {
     if (is_civil_exists(d.name)) {
         cout << "Ship with name:" << d.name << "already exists \n";
         return false;
     }
     // TODO: create class of freighter - depens on class
     //Data d, int max_capacity,int cargo, int resistance, Port& destination
-    auto freighter = make_shared<Freighter>(d, fuel, max_fuel, consumption, resistance, max_capacity, cargo, destination);
+    auto freighter = make_shared<Freighter>(d, fuel, max_fuel, consumption, resistance, max_capacity, cargo);
     ships.emplace_back(freighter);
     return true;
 }
 
-bool Model::create_patrol_ship(Data& d,double fuel, double max_fuel, double consumption, double resistance) {
+bool Model::create_patrol_ship(Ship::Data& d,double fuel, double max_fuel, double consumption, double resistance) {
     if (is_civil_exists(d.name)) {
         cout << "Ship with name:" << d.name << "already exists \n";
         return false;
@@ -42,7 +46,7 @@ bool Model::create_patrol_ship(Data& d,double fuel, double max_fuel, double cons
     return true;
 }
 
-bool Model::create_pirate_ship (Data& d,double range,double force){
+bool Model::create_pirate_ship (Ship::Data& d,double range,double force){
     if (is_pirate_exists(d.name)) {
         cout << "Ship with name:" << d.name << "already exists \n";
         return false;
@@ -100,3 +104,24 @@ vector<weak_ptr<T>> Model::toWeakPtrVector(const vector<shared_ptr<T>> &shared_v
 
         return weak_vec;
 }
+
+const shared_ptr<Port> Model::get_port_by_name(const string &name) {
+    for (auto& p:ports) {
+        if (p->get_name() == name) {return p;}
+    }
+    return nullptr;
+}
+
+const shared_ptr<CivilianShip> Model::get_ship_by_name(const string &name) {
+    for (auto& p:ships) {
+        if (p->get_name() == name) {return p;}
+    }
+    return nullptr;
+}
+
+void Model::add_to_refueling(const string &ship_name, shared_ptr<Port> p) {
+    shared_ptr<CivilianShip> s= get_ship_by_name(ship_name);
+    if (!s) {  p->add_to_queue(s);}
+}
+
+

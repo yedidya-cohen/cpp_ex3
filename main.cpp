@@ -24,7 +24,7 @@ int main() {
     d_freighter.state = ShipState::STOPPED;
 
     // Data d, double fuel, double max_fuel, double consumption, double resistance, int max_capacity, int cargo, Port& destination
-    m.create_freighter_ship(d_freighter, 100, 500, 10, 5, 1000, 0, haifa);
+    m.create_freighter_ship(d_freighter, 100, 500, 10, 5, 1000, 0);
     // Create Patrol
     Data d_patrol;
     d_patrol.name = "Police";
@@ -48,9 +48,11 @@ int main() {
 
     // Data& d, double range, double force
     m.create_pirate_ship(d_pirate, 50, 100);
+
     View v(25,2.0,{-10,-10});
     v.draw();
-
+    m.update();
+    v.draw();
 
     return 0;
 }

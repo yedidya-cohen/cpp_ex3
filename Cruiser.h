@@ -7,8 +7,8 @@
 
 class Cruiser: public Ship{
 public:
-    Cruiser(const Data& d,double range,double force);
-    ~Cruiser() override = default;
+    Cruiser(Data& d,double range,double force);
+    ~Cruiser() = default;
     Cruiser(const Cruiser& other) = default;
     Cruiser& operator=(const Cruiser& other) = default;
 

@@ -66,8 +66,7 @@ void Point::print() const
     cout << setprecision(2) << "(" << x << ", " << y << ")";
 }
 
-bool Point::operator==(const Point & rhs)
-{//nm
+bool Point::operator==(const Point & rhs) const {//nm
     return abs(x - rhs.x) < 0.1 && abs(y - rhs.y) < 0.1;
 }
 

@@ -1,14 +1,16 @@
 #ifndef EX3_PORT_H
 #define EX3_PORT_H
 
-#include "CivilianShip.h"
 #include <string>
 #include <utility>
 #include <queue>
 #include "Geometry.h"
+#include <memory>
 
-class CivilianShip;
+
+
 using namespace std;
+class CivilianShip;
 
 class Port{
 public:
@@ -21,21 +23,9 @@ public:
     Port(Port&& rhs) = default;
     Port& operator=(Port&& rhs) = default;
 
-    // void update(){
-    //     fuel+=fuel_production;
-    //     if(!ship_q.empty()){
-    //         CivilianShip s = ship_q.pop();
-    //
-    //     }
-    // }
-    //
-    void add_to_queue(CivilianShip& s) {
-        //TODO: add to queue
-    }
-    //
-    // void decreace_fuel(double amount){
-    //     fuel-=amount;
-    // }
+    void update();
+
+    void add_to_queue(const shared_ptr<CivilianShip>& s);
 
     Point get_position()const {return pos;}
     string get_name() const {return name;}

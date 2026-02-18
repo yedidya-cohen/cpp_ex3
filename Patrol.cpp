@@ -35,6 +35,8 @@ void Patrol::update() {
             break;
         case STOPPED:
             next_step();
+        default:
+            assert("bad bad");
     }
 }
 

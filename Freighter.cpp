@@ -1,9 +1,9 @@
 #include "Freighter.h"
 
 
-Freighter::Freighter(Data d,double fuel, double max_fuel, double consumption, double resistance ,int max_capacity,int cargo, Port& destination)
+Freighter::Freighter(Data& d,double fuel, double max_fuel, double consumption, double resistance ,int max_capacity,int cargo)
 :CivilianShip(d,fuel,max_fuel,consumption,resistance),
-max_capacity(max_capacity),cargo(cargo),dest(destination){}//TODO: change dest
+max_capacity(max_capacity),cargo(cargo){}
 
 
 void Freighter::update(){
@@ -41,20 +41,20 @@ void Freighter::update_cargo() {
 
 void Freighter::describe() const{
     std::cout << "Freighter " << name << " at"  << position  << " fuel: "<< curr_fuel << " resistance: " << resistance
-        << " Moving to " << dest->get_name() << "on course "<< to_degrees(rad_angle)<<"deg , speed "<<curr_speed<< " nm/hr moving to"<<
+        << " Moving to " << curr_port->get_name() << "on course "<< to_degrees(rad_angle)<<"deg , speed "<<curr_speed<< " nm/hr moving to"<<
            "loadin/unloding dest" <<endl; //TODO need to finish
 }
 
-void Freighter::load_at(shared_ptr<Port>& p, int x) {
+void Freighter::load_at(shared_ptr<Port>& p) {
     int i = is_exists(p);
-    if(i == -1){missions.push_back({p,1});}
+    if(i == -1){missions.emplace_back(p,1);}
     else {missions[i].second = 1;}
 
 }
 
 void Freighter::unload_at(shared_ptr<Port>& p,int amount) {
     int i = is_exists(p);
-    if(i == -1){missions.push_back({p,amount});}
+    if(i == -1){missions.emplace_back(p,amount);}
     else {missions[i].second = missions[i].second > 0 ? 1 : missions[i].second-amount;}
 }
 
