@@ -11,6 +11,9 @@ cmake-build-debug
 # Precompiled Headers
 *.gch
 *.pch
+build
+build_mingw
+.vscode
 
 # Linker files
 *.ilk
