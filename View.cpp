@@ -1,4 +1,7 @@
 #include "View.h"
+#include "CivilianShip.h"
+#include "Cruiser.h"
+#include "Port.h"
 #include <iostream>
 #include <iomanip>
 #include <vector>

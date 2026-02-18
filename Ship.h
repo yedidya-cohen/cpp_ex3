@@ -7,7 +7,6 @@
 #include <iostream>
 #include <cmath>
 #include "Geometry.h"
-#include "Model.h"
 
 using namespace std;
 class Port;
@@ -105,5 +104,8 @@ protected:
 
 
 };
+
+using ShipState = Ship::ShipState;
+using Data = Ship::Data;
 
 #endif

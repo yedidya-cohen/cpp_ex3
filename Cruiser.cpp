@@ -1,6 +1,8 @@
 
 
 #include "Cruiser.h"
+#include "CivilianShip.h"
+#include "Model.h"
 
 
 Cruiser::Cruiser(Data& d, double range, double force): Ship(d), range(range), force(force)

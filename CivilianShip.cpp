@@ -1,4 +1,6 @@
 #include "CivilianShip.h"
+#include "Model.h"
+#include "Port.h"
 
 CivilianShip::CivilianShip(Data& d, double fuel, double max_fuel, double consumption, double resistance)
     : Ship(d),

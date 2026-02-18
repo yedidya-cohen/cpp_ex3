@@ -1,0 +1,3 @@
+C:/C++/Advance C++/ex3/build/CMakeFiles/ex3.dir
+C:/C++/Advance C++/ex3/build/CMakeFiles/edit_cache.dir
+C:/C++/Advance C++/ex3/build/CMakeFiles/rebuild_cache.dir

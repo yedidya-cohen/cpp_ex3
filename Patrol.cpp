@@ -1,5 +1,7 @@
 
 #include "Patrol.h"
+#include "Model.h"
+#include "Port.h"
 
 #include <assert.h>
 

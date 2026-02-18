@@ -1,8 +1,36 @@
 #include "Model.h"
+#include "Cruiser.h"
+#include "CivilianShip.h"
+#include "Freighter.h"
+#include "Patrol.h"
+#include "Port.h"
 
-#include <string>
-#include "Geometry.h"
+vector<weak_ptr<CivilianShip>> Model::get_ships() const {
+    vector<weak_ptr<CivilianShip>> out;
+    out.reserve(ships.size());
+    for (const auto& s : ships) {
+        out.push_back(s);
+    }
+    return out;
+}
 
+vector<weak_ptr<Cruiser>> Model::get_pirates() const {
+    vector<weak_ptr<Cruiser>> out;
+    out.reserve(pirates.size());
+    for (const auto& p : pirates) {
+        out.push_back(p);
+    }
+    return out;
+}
+
+vector<weak_ptr<Port>> Model::get_ports() const {
+    vector<weak_ptr<Port>> out;
+    out.reserve(ports.size());
+    for (const auto& p : ports) {
+        out.push_back(p);
+    }
+    return out;
+}
 
 void Model::update() {
     for (auto& s: ships){s->update();}
@@ -92,19 +120,6 @@ bool Model::is_port_exists(const string &o) const{
     return false;
 }
 
-template<typename T>
-vector<weak_ptr<T>> Model::toWeakPtrVector(const vector<shared_ptr<T>> &shared_vec) {
-
-        std::vector<std::weak_ptr<T>> weak_vec;
-        weak_vec.reserve(shared_vec.size());  // Pre-allocate for efficiency
-
-        for (const auto& shared : shared_vec) {
-            weak_vec.push_back(shared);  // Implicit conversion
-        }
-
-        return weak_vec;
-}
-
 const shared_ptr<Port> Model::get_port_by_name(const string &name) {
     for (auto& p:ports) {
         if (p->get_name() == name) {return p;}
@@ -117,6 +132,17 @@ const shared_ptr<CivilianShip> Model::get_ship_by_name(const string &name) {
         if (p->get_name() == name) {return p;}
     }
     return nullptr;
+}
+
+bool Model::attacking(const string& attacked, int force) {
+    shared_ptr<CivilianShip> target = get_ship_by_name(attacked);
+    if (!target) {
+        return false;
+    }
+
+    const bool win = force > target->get_resistance();
+    target->been_attacked(win);
+    return win;
 }
 
 void Model::add_to_refueling(const string &ship_name, shared_ptr<Port> p) {

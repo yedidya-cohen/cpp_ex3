@@ -1,8 +1,9 @@
 #ifndef EX3_CRUISER_H
 #define EX3_CRUISER_H
 
+#include "Ship.h"
 
-#include "CivilianShip.h"
+class CivilianShip;
 
 
 class Cruiser: public Ship{

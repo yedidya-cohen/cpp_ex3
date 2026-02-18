@@ -1,14 +1,14 @@
 #ifndef EX3_MODEL_H
 #define EX3_MODEL_H
 
-#include "Freighter.h"
-#include "Patrol.h"
-#include "Cruiser.h"
-#include "Port.h"
+#include <memory>
+#include <string>
 #include <vector>
-#include <algorithm>
 #include "Ship.h"
 
+class CivilianShip;
+class Cruiser;
+class Port;
 
 using namespace std;
 
@@ -25,9 +25,9 @@ public:
 
     bool create_port(string name,const Point& pos ,double fuel_production, double fuel);
 
-    const vector<weak_ptr<CivilianShip>> get_ships() {return toWeakPtrVector(ships);}
-    const vector<weak_ptr<Cruiser>> get_pirates() {return toWeakPtrVector(pirates);}
-    const vector<weak_ptr<Port>> get_ports() {return toWeakPtrVector(ports);}
+    vector<weak_ptr<CivilianShip>> get_ships() const;
+    vector<weak_ptr<Cruiser>> get_pirates() const;
+    vector<weak_ptr<Port>> get_ports() const;
 
     const shared_ptr<Port> get_port_by_name(const string& name);
     const shared_ptr<CivilianShip> get_ship_by_name(const string& name);
@@ -48,8 +48,7 @@ public:
     //
     // const Port& get_port(int index) const;
 
-
-    // bool attacking(const string& attacked, int force);
+    bool attacking(const string& attacked, int force);
     shared_ptr<Port> defualt_port();
     void add_to_refueling(const string& name, shared_ptr<Port> p);
 
@@ -63,10 +62,6 @@ private:
     bool is_civil_exists(const string& o) const;
     bool is_pirate_exists(const string& o) const;
     bool is_port_exists(const string& o) const;
-
-    template<typename T>
-    std::vector<std::weak_ptr<T>> toWeakPtrVector(
-    const std::vector<std::shared_ptr<T>>& shared_vec);
 };
 
 

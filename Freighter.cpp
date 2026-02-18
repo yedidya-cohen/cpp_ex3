@@ -1,4 +1,5 @@
 #include "Freighter.h"
+#include "Port.h"
 
 
 Freighter::Freighter(Data& d,double fuel, double max_fuel, double consumption, double resistance ,int max_capacity,int cargo)
