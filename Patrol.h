@@ -16,7 +16,7 @@ public:
     Patrol(const Patrol& other) = default;
     Patrol& operator=(const Patrol& other) = default;
 
-    void update();
+    void update() override;
     void describe() const;
 
     void refueling(double amount);

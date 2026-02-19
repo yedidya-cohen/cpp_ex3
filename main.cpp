@@ -19,9 +19,9 @@ int main() {
     d_freighter.name = "Bertie";
     d_freighter.pos = Point(0, 0);
     d_freighter.max_speed = 20;
-    d_freighter.curr_speed = 0;
-    d_freighter.angle = 0;
-    d_freighter.state = ShipState::STOPPED;
+    d_freighter.curr_speed = 10;
+    d_freighter.angle = 90;
+    d_freighter.state = ShipState::MOVING;
 
     // Data d, double fuel, double max_fuel, double consumption, double resistance, int max_capacity, int cargo, Port& destination
     m.create_freighter_ship(d_freighter, 100, 500, 10, 5, 1000, 0);
@@ -30,9 +30,9 @@ int main() {
     d_patrol.name = "Police";
     d_patrol.pos = Point(5, 5);
     d_patrol.max_speed = 30;
-    d_patrol.curr_speed = 0;
+    d_patrol.curr_speed = 10;
     d_patrol.angle = 0;
-    d_patrol.state = ShipState::STOPPED;
+    d_patrol.state = ShipState::MOVING;
 
     // Data& d, double fuel, double max_fuel, double consumption, double resistance
     m.create_patrol_ship(d_patrol, 100, 200, 10, 5);
@@ -42,9 +42,9 @@ int main() {
     d_pirate.name = "Blackbeard";
     d_pirate.pos = Point(20, 20);
     d_pirate.max_speed = 40;
-    d_pirate.curr_speed = 0;
-    d_pirate.angle = 0;
-    d_pirate.state = ShipState::STOPPED;
+    d_pirate.curr_speed = 10;
+    d_pirate.angle = 180;
+    d_pirate.state = ShipState::MOVING;
 
     // Data& d, double range, double force
     m.create_pirate_ship(d_pirate, 50, 100);

@@ -147,7 +147,8 @@ bool Model::attacking(const string& attacked, int force) {
 
 void Model::add_to_refueling(const string &ship_name, shared_ptr<Port> p) {
     shared_ptr<CivilianShip> s= get_ship_by_name(ship_name);
-    if (!s) {  p->add_to_queue(s);}
+    if (!s) {return; }
+    p->add_to_queue(s);
 }
 
 

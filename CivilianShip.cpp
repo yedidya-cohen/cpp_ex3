@@ -11,6 +11,9 @@ CivilianShip::CivilianShip(Data& d, double fuel, double max_fuel, double consump
       curr_port(Model::get_instance().defualt_port()) {}
 
 bool CivilianShip::dock_at(shared_ptr<Port> p) {
+    if (!p) {
+        return false;
+    }
     if (position == p->get_position()) {
         position = p->get_position();
         state = DOCKED;
@@ -21,7 +24,7 @@ bool CivilianShip::dock_at(shared_ptr<Port> p) {
     return false;
 }
 
-void CivilianShip::update() {
+void CivilianShip::update(){
     Ship::update();
     curr_fuel -= consumption;
     if (curr_fuel <= 0) {

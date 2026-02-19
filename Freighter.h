@@ -11,7 +11,7 @@ public:
     Freighter(const Freighter& other) = default;
     Freighter& operator=(const Freighter& other) = default;
 
-    void update();
+    void update() override;
     void describe() const;
     void load_at(shared_ptr<Port>& p);
     void unload_at(shared_ptr<Port>& p, int amount);

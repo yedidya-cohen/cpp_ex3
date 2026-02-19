@@ -11,7 +11,7 @@ public:
 
 
     bool dock_at(shared_ptr<Port> p);
-    void update() override;
+    virtual void update();
 
     double missing_fuel() const;
     void add_fuel(double f);

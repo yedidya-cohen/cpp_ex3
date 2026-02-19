@@ -17,8 +17,9 @@ Patrol::Patrol(Data& d,double fuel, double max_fuel, double consumption, double 
 }
 
 void Patrol::describe() const {
+    const string target_name = current_target ? current_target->get_name() : "None";
     std::cout << "Patrol " << name << " at"  << position  << " fuel: "<< curr_fuel << " resistance: " << resistance
-    << " Moving to " << current_target->get_name() << "on course "<< to_degrees(rad_angle)<<"deg , speed "<<curr_speed<< " nm/hr"<<endl;
+    << " Moving to " << target_name << "on course "<< to_degrees(rad_angle)<<"deg , speed "<<curr_speed<< " nm/hr"<<endl;
 }
 
 void Patrol::update() {
@@ -27,7 +28,7 @@ void Patrol::update() {
             return;
         case MOVING:
             CivilianShip::update();// 1 hour pass
-            if (dock_at(current_target)){
+            if (current_target && dock_at(current_target)){
                 patrolState = W_REFUEL;
                 current_target = nullptr;
             }
