@@ -18,8 +18,7 @@ void Freighter::update(){
             break;
         case ShipState::MOVING:
             CivilianShip::update();
-            if (curr_port)
-                dock_at(curr_port);
+            dock_at(curr_port);
             break;
         case W_REFUELING:
             return;
@@ -41,7 +40,7 @@ void Freighter::update_cargo() {
     missions.erase(missions.begin() + i);
 }
 
-void Freighter::describe() const{
+void Freighter::describe() const {
     const string target_name = curr_port ? curr_port->get_name() : "None";
     std::cout << "Freighter " << name << " at"  << position  << " fuel: "<< curr_fuel << " resistance: " << resistance
         << " Moving to " << target_name << "on course "<< to_degrees(rad_angle)<<"deg , speed "<<curr_speed<< " nm/hr moving to"<<

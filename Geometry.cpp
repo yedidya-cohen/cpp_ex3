@@ -3,7 +3,7 @@
 #include <ctgmath>
 const double pi = 2. * atan2(1., 0.);
 double to_radians(double theta_d) {
-    theta_d = theta_d - 90;
+    theta_d = 90-theta_d;
     return theta_d * pi / 180.0;
 }
 

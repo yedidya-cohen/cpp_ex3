@@ -4,6 +4,8 @@
 #include <memory>
 #include <string>
 #include <vector>
+
+#include "CivilianShip.h"
 #include "Ship.h"
 
 class CivilianShip;
@@ -34,6 +36,9 @@ public:
 
     // void status();
     void update();
+    void describe() const {
+        for (auto& s : ships){s->describe();}
+    }
 
     // void course(string& ship_name,double angle, double speed);
     // void position(string& ship_name, Point& p, double speed);

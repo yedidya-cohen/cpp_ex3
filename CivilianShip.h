@@ -21,6 +21,7 @@ public:
     void for_port(); //for port after refuel
 
     void been_attacked(bool win_lose); //true mean lose
+    virtual void describe() const = 0;
 
     double get_resistance() const;
     //

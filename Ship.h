@@ -77,7 +77,7 @@ public:
         rad_angle = std::atan2(p.y-position.y,p.x-position.x);
 
     }
-
+    virtual void describe() const = 0;
     void set_destination(const Port& p, double speed);
 
     void set_state(const ShipState s) {

@@ -14,8 +14,8 @@ public:
     Cruiser& operator=(const Cruiser& other) = default;
 
 
-    void update();
-    void describe() const;
+    void update() override;
+    void describe() const override;
 
     void attack(const CivilianShip& s);
     double get_force() const;

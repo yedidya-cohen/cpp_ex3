@@ -48,11 +48,12 @@ int main() {
 
     // Data& d, double range, double force
     m.create_pirate_ship(d_pirate, 50, 100);
-
+    m.describe();
     View v(25,2.0,{-10,-10});
     v.draw();
     m.update();
     v.draw();
+    m.describe();
 
     return 0;
 }
