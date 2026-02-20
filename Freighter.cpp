@@ -18,7 +18,7 @@ void Freighter::update(){
             break;
         case ShipState::MOVING:
             CivilianShip::update();
-            dock_at(curr_port);
+            //TODO - dock_at(curr_port); //the chat point we are tring to dock where we been - so i dont know if it logical issue or not
             break;
         case W_REFUELING:
             return;
@@ -26,7 +26,9 @@ void Freighter::update(){
 }
 
 void Freighter::update_cargo() {
-    int i = is_exists(curr_port);
+    auto cp =curr_port.lock();
+    if (!cp) return;
+    int i = is_exists(cp->get_name());
     if(i == -1) {return;}
     int mis = missions[i].second;
     if (mis > 0) {cargo = max_capacity;}
@@ -41,28 +43,29 @@ void Freighter::update_cargo() {
 }
 
 void Freighter::describe() const {
-    const string target_name = curr_port ? curr_port->get_name() : "None";
+    const auto cp = curr_port.lock();
+    const string target_name = cp ? cp->get_name() : "None";
     std::cout << "Freighter " << name << " at"  << position  << " fuel: "<< curr_fuel << " resistance: " << resistance
         << " Moving to " << target_name << "on course "<< to_degrees(rad_angle)<<"deg , speed "<<curr_speed<< " nm/hr moving to"<<
            "loadin/unloding dest" <<endl; //TODO need to finish
 }
 
 void Freighter::load_at(shared_ptr<Port>& p) {
-    int i = is_exists(p);
-    if(i == -1){missions.emplace_back(p,1);}
+    int i = is_exists(p->get_name());
+    if(i == -1){missions.emplace_back(weak_ptr<Port>(p),1);}
     else {missions[i].second = 1;}
-
 }
 
 void Freighter::unload_at(shared_ptr<Port>& p,int amount) {
-    int i = is_exists(p);
-    if(i == -1){missions.emplace_back(p,amount);}
+    int i = is_exists(p->get_name());
+    if(i == -1){missions.emplace_back(weak_ptr<Port>(p),amount);}
     else {missions[i].second = missions[i].second > 0 ? 1 : missions[i].second-amount;}
 }
 
-int Freighter::is_exists(shared_ptr<Port> &p) const{
+int Freighter::is_exists(const string& port_name) const{
     for (int i =0; i<missions.size(); i++) {
-        if (p == missions[i].first) { return i;}
+        const auto mp = missions[i].first.lock(); if (!mp) continue;
+        if (port_name == mp->get_name()) { return i;}
     }
     return -1;
 }

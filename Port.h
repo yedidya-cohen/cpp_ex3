@@ -36,7 +36,7 @@ private:
     Point pos;
     double fuel_production;
     double fuel;
-    queue<shared_ptr<CivilianShip>> ship_q{};
+    queue<weak_ptr<CivilianShip>> ship_q{};
 };
 
 #endif

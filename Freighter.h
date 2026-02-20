@@ -18,11 +18,11 @@ public:
 
 
 private:
-    int is_exists(shared_ptr<Port>& p) const;
+    int is_exists(const string& port_name) const;
     void update_cargo();
     const int max_capacity;
     int cargo;
-    vector<pair<shared_ptr<Port>, int>>  missions;
+    vector<pair<weak_ptr<Port>, int>>  missions;
 
     // enum mission {
     //     None = 0,

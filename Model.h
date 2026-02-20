@@ -54,8 +54,8 @@ public:
     // const Port& get_port(int index) const;
 
     bool attacking(const string& attacked, int force);
-    shared_ptr<Port> defualt_port();
     void add_to_refueling(const string& name, shared_ptr<Port> p);
+    // shared_ptr<Port> defualt_port();
 
 private:
     Model() = default; //singleton

@@ -8,8 +8,8 @@
 Patrol::Patrol(Data& d,double fuel, double max_fuel, double consumption, double resistance)
         : CivilianShip(d, fuel, max_fuel, consumption, resistance),
           patrolState(NONE),
-          current_target(nullptr),
-          first_port(""){
+          current_target(),
+          first_port(){
     w_g.curr = 0;
     w_g.start = 0;
     w_g.len = 0;
@@ -17,9 +17,10 @@ Patrol::Patrol(Data& d,double fuel, double max_fuel, double consumption, double 
 }
 
 void Patrol::describe() const {
-    const string target_name = current_target ? current_target->get_name() : "None";
-    std::cout << "Patrol " << name << " at"  << position  << " fuel: "<< curr_fuel << " resistance: " << resistance
-    << " Moving to " << target_name << "on course "<< to_degrees(rad_angle)<<"deg , speed "<<curr_speed<< " nm/hr"<<endl;
+    auto t = current_target.lock();
+    const string target_name = t ? t->get_name() : "None";
+    std::cout << "Patrol " << name << " at "  << position  << " fuel: "<< curr_fuel << " resistance: " << resistance
+    << " Moving to " << target_name << " on course "<< to_degrees(rad_angle)<<" deg , speed "<<curr_speed<< " nm/hr"<<endl;
 }
 
 void Patrol::update() {
@@ -28,10 +29,11 @@ void Patrol::update() {
             return;
         case MOVING:
             CivilianShip::update();// 1 hour pass
-            if (current_target && dock_at(current_target)){
+            if (auto t = current_target.lock(); t && dock_at(t)) { //check
                 patrolState = W_REFUEL;
-                current_target = nullptr;
+                current_target.reset();
             }
+            break;
         case DOCKED:
             //my inner state - 3 steps
             my_3_steps();
@@ -82,7 +84,7 @@ void Patrol::next_step() {
             min_dist = d;
             best_candidate = sp;
         }
-        else if (d == min_dist) {
+        else if (fabs(d-min_dist) < 1e-6) {
             // Tie-Breaker: Distance is equal, check Alphabetical Order
             // Assignment Requirement: "choose the first one alphabetically"
             if (best_candidate == nullptr || p_name < best_candidate->get_name()) {
@@ -96,7 +98,7 @@ void Patrol::next_step() {
         // Scenario A: Found a valid next target
         // We do NOT add to 'visited' yet (only on arrival), but we set the course.
         // Assuming set_destination takes a shared_ptr and speed
-        if (first_port == "") {first_port = best_candidate->get_name();}
+        if (first_port.empty()) {first_port = best_candidate->get_name();}
         set_destination(*best_candidate,curr_speed);
         current_target = best_candidate;
     }
@@ -132,7 +134,7 @@ void Patrol::my_3_steps() {
             break;
         case DEST:
             state = MOVING;
-            if (current_target == nullptr) {next_step();}
+            if (current_target.expired()) {next_step();}
             patrolState = NONE;
             break;
         default:
@@ -142,7 +144,7 @@ void Patrol::my_3_steps() {
 }
 
 void Patrol::refueling(double amount) {
-    if (curr_fuel + amount <= max_fuel) {max_fuel = curr_fuel + amount;}
+    curr_fuel = std::min(max_fuel,curr_fuel + amount);
     patrolState = DOCK;
 }
 

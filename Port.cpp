@@ -7,13 +7,15 @@ void Port::update() {
 
     if (ship_q.empty()) { return;}
 
-    shared_ptr<CivilianShip> ship = ship_q.front();
+    auto ws = ship_q.front();
     ship_q.pop();
     //check that valid
-    if (!ship) {  return;}
+    auto ship = ws.lock();
+    if (!ship) {return;} //actually should not happend but maybe a while than we always serve someone?
+
 
     double needed = ship->missing_fuel();
-    double supplied = fuel > needed ? needed : fuel;
+    double supplied = (fuel > needed) ? needed : fuel;
 
     ship->add_fuel(supplied);
     fuel -= supplied;

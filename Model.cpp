@@ -38,10 +38,11 @@ void Model::update() {
     for (auto& p: ports){p->update();}
 }
 
-shared_ptr<Port> Model::defualt_port() {
-    shared_ptr<Port> p = make_shared<Port>("", Point(-1,-1), -1, -1 );
-    return p;
-}
+//note - save but i intentd not to use default - everything is pointers - no need to check default
+// shared_ptr<Port> Model::defualt_port() {
+//     shared_ptr<Port> p = make_shared<Port>("", Point(-1,-1), -1, -1 );
+//     return p;
+// }
 
 
 // void Model::status() {
@@ -145,8 +146,8 @@ bool Model::attacking(const string& attacked, int force) {
     return win;
 }
 
-void Model::add_to_refueling(const string &ship_name, shared_ptr<Port> p) {
-    shared_ptr<CivilianShip> s= get_ship_by_name(ship_name);
+void Model::add_to_refueling(const string &name, shared_ptr<Port> p) {
+    shared_ptr<CivilianShip> s = get_ship_by_name(name);
     if (!s) {return; }
     p->add_to_queue(s);
 }

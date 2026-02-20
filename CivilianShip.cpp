@@ -8,13 +8,14 @@ CivilianShip::CivilianShip(Data& d, double fuel, double max_fuel, double consump
       resistance(resistance),
       max_fuel(max_fuel),
       consumption(consumption),
-      curr_port(Model::get_instance().defualt_port()) {}
+      curr_port() {}
 
-bool CivilianShip::dock_at(shared_ptr<Port> p) {
+
+bool CivilianShip::dock_at(shared_ptr<Port> p) { //check who is calling than change base on if its weak/shared
     if (!p) {
         return false;
     }
-    if (position == p->get_position()) {
+    if (dist(position,p->get_position()) <= 0.1) { //change because dist should be 0.1
         position = p->get_position();
         state = DOCKED;
         curr_port = p;
@@ -42,8 +43,10 @@ void CivilianShip::add_fuel(double f) {
 
 void CivilianShip::refuel() {
     if (state == DOCKED) {
-        Model::get_instance().add_to_refueling(name, curr_port);
-        state = W_REFUELING;
+        if (auto p = curr_port.lock()) {
+            Model::get_instance().add_to_refueling(name, p);
+            state = W_REFUELING;
+        }
     }
 }
 

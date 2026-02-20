@@ -47,7 +47,7 @@ public:
 protected:
     double curr_fuel, resistance;
     double max_fuel, consumption;
-    shared_ptr<Port> curr_port;
+    weak_ptr<Port> curr_port;
 };
 
 

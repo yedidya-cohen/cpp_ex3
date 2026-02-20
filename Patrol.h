@@ -13,8 +13,8 @@
 class Patrol : public CivilianShip{
 public:
     Patrol(Data& d,double fuel, double max_fuel, double consumption, double resistance);
-    Patrol(const Patrol& other) = default;
-    Patrol& operator=(const Patrol& other) = default;
+    Patrol(const Patrol& other) = default; //delete
+    Patrol& operator=(const Patrol& other) = default; //delete
 
     void update() override;
     void describe() const override;
@@ -37,8 +37,8 @@ private:
     enum PatrolState {W_REFUEL=0, REFUEL=1,DOCK=2,DEST=3,NONE=4};
     PatrolState patrolState;
     where_to w_g;
-    queue<pair<shared_ptr<Port>,double>> next;
-    std::shared_ptr<Port> current_target;
+    queue<pair<weak_ptr<Port>,double>> next;
+    weak_ptr<Port> current_target;
     string first_port;
 };
 
