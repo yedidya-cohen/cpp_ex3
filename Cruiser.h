@@ -17,7 +17,7 @@ public:
     void update() override;
     void describe() const override;
 
-    void attack(const CivilianShip& s);
+    void attack(weak_ptr<CivilianShip> s);
     double get_force() const;
 
 private:

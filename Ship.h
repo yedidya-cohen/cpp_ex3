@@ -75,10 +75,11 @@ public:
         state = MOVING;
         curr_speed = speed;
         rad_angle = std::atan2(p.y-position.y,p.x-position.x);
-
     }
+
     virtual void describe() const = 0;
-    void set_destination(const Port& p, double speed);
+
+    void set_destination(weak_ptr<Port> p, double speed); //TODO: donwgrade to civillianship
 
     void set_state(const ShipState s) {
         if (state!=DEAD)
@@ -91,16 +92,6 @@ protected:
     double max_speed;
     Point position;
     ShipState state;
-
-    // void move_by_point() //update
-    // {
-    //     //TODO: check if outside boarder
-    //     double new_x = Ship::position.get_x() + Ship::curr_speed * sin(angle);
-    //     double new_y = Ship::position.get_y() + Ship::curr_speed * cos(angle);
-    //     Point p (new_x, new_y);
-    //     position = p;
-    // }
-    //
 
 
 };

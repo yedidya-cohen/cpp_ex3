@@ -64,3 +64,11 @@ void CivilianShip::been_attacked(bool win_lose) {
 double CivilianShip::get_resistance() const {
     return resistance;
 }
+
+void CivilianShip::load_at(shared_ptr<Port> &p) {
+
+}
+
+void CivilianShip::unload_at(shared_ptr<Port> &p, int amount) {
+
+}

@@ -30,6 +30,7 @@ public:
     Point get_position()const {return pos;}
     string get_name() const {return name;}
     double get_available_fuel() const {return fuel;}
+    void describe() const;
 
 private:
     string name;

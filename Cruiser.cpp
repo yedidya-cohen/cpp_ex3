@@ -6,14 +6,13 @@
 
 
 Cruiser::Cruiser(Data& d, double range, double force): Ship(d), range(range), force(force)
-,need_to_attack(""){}
+,need_to_attack(){}
 //pirates!
 
 
 void Cruiser::update() {
-    if (need_to_attack != "" ){
+    if (!need_to_attack.empty() ){
         Model::get_instance().attacking(need_to_attack, force) ? force ++ : force --;
-
         need_to_attack = "";
         return;
     }
@@ -30,8 +29,10 @@ void Cruiser::describe() const {
 //
 
 //TODO: 2 cmd of attack, what to do?
-void Cruiser::attack(const CivilianShip& s) {
-    if (dist(this->get_position(),s.get_position()) <= range) {need_to_attack = s.get_name();}
+void Cruiser::attack(weak_ptr<CivilianShip> s) {
+    auto sp = s.lock();
+    if (!sp) {return;}
+    if (dist(this->get_position(),sp->get_position()) <= range) {need_to_attack = sp->get_name();}
 }
 
 double Cruiser::get_force() const{ return force;}

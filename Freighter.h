@@ -13,8 +13,8 @@ public:
 
     void update() override;
     void describe() const override;
-    void load_at(shared_ptr<Port>& p);
-    void unload_at(shared_ptr<Port>& p, int amount);
+    void load_at(shared_ptr<Port>& p) override;
+    void unload_at(shared_ptr<Port>& p, int amount) override;
 
 
 private:

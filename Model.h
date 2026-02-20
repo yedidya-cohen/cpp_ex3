@@ -31,27 +31,27 @@ public:
     vector<weak_ptr<Cruiser>> get_pirates() const;
     vector<weak_ptr<Port>> get_ports() const;
 
+    //TODO - change to private if not needed
     const shared_ptr<Port> get_port_by_name(const string& name);
     const shared_ptr<CivilianShip> get_ship_by_name(const string& name);
+    const shared_ptr<Cruiser> get_pirate_ship_by_name(const string& name);
 
-    // void status();
-    void update();
-    void describe() const {
-        for (auto& s : ships){s->describe();}
-    }
+    void update() const;
+    void describe() const;
 
-    // void course(string& ship_name,double angle, double speed);
-    // void position(string& ship_name, Point& p, double speed);
-    // void destination(string& ship_name, string& name, double speed);
+
+    void course(string& ship_name,double angle, double speed);
+    void position(string& ship_name, Point& p, double speed);
+    void destination(string& ship_name, string& port_name, double speed);
     //
-    // void load_at(string& ship_name, string& port_name);
-    // void unload_at(string& ship_name, string& port_name, int amount);
-    // void dock_at(string& ship_name, string& port_name);
-    // void attack(string& ship_name, string& ship_target);
-    // void refuel(string& ship_name);
-    // void stop(string& ship_name);
+    void load_at(string& ship_name, string& port_name);
+    void unload_at(string& ship_name, string& port_name, int amount);
+    void dock_at(string& ship_name, string& port_name);
+    void attack(string& ship_name, string& ship_target);
+    void refuel(string& ship_name);
+    void stop(string& ship_name);
     //
-    // const Port& get_port(int index) const;
+    // const Port& get_port(int index) const; //not needed
 
     bool attacking(const string& attacked, int force);
     void add_to_refueling(const string& name, shared_ptr<Port> p);

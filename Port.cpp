@@ -26,3 +26,7 @@ void Port::update() {
 void Port::add_to_queue(const shared_ptr<CivilianShip>& s) {
     ship_q.push(s);
 }
+
+void Port::describe() const {
+    std::cout << "Port " << name << " at "  << pos  << " fuel: "<< fuel << endl;
+}

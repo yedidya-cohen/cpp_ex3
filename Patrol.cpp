@@ -99,7 +99,7 @@ void Patrol::next_step() {
         // We do NOT add to 'visited' yet (only on arrival), but we set the course.
         // Assuming set_destination takes a shared_ptr and speed
         if (first_port.empty()) {first_port = best_candidate->get_name();}
-        set_destination(*best_candidate,curr_speed);
+        set_destination(best_candidate,curr_speed);
         current_target = best_candidate;
     }
     else {
@@ -114,7 +114,7 @@ void Patrol::next_step() {
             //state = DEAD;
         } else {
             // Loop finished, but we must return to base
-            set_destination(*start_port_sp, curr_speed);
+            set_destination(start_port_sp, curr_speed);
             current_target = start_port_sp;
         }
     }

@@ -24,6 +24,9 @@ public:
     virtual void describe() const = 0;
 
     double get_resistance() const;
+    //TODO - Casting to Freighter
+    virtual void load_at(shared_ptr<Port>& p);
+    virtual void unload_at(shared_ptr<Port>& p, int amount);
     //
     // void attacked(bool win_lose);
     // virtual void set_destination(const Port& dest, double speed) = 0;

@@ -11,7 +11,7 @@ void Freighter::update(){
     switch (state) {
         case DEAD:
             return;
-        case STOPPED:
+        case STOPPED: //only hen attack
             return;
         case ShipState::DOCKED:
             update_cargo();
@@ -36,7 +36,7 @@ void Freighter::update_cargo() {
         if (cargo + mis >= 0) {
             cargo += mis;
         }else {
-            //TODO: error -couerr
+            //TODO: error - couerr
         }
     }
     missions.erase(missions.begin() + i);
