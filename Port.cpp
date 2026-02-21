@@ -19,8 +19,6 @@ void Port::update() {
 
     ship->add_fuel(supplied);
     fuel -= supplied;
-
-    ship->for_port();
 }
 
 void Port::add_to_queue(const shared_ptr<CivilianShip>& s) {

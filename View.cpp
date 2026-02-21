@@ -11,8 +11,9 @@
 using namespace std;
 
 View::View(int grid, double sc, Point org) : grid_size(grid), scale(sc), origin(org) {}
-
+//need to be 6- 30 if not cerr
 void View::set_size(int size) {
+    if (size>grid_max || size< grid_min){cerr<<"wrong size, should be between 6 and 30\n"; return;}
     grid_size = size;
 }
 

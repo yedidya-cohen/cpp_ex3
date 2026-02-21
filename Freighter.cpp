@@ -12,13 +12,13 @@ void Freighter::update(){
         case DEAD:
             return;
         case STOPPED: //only hen attack
+            state = MOVING;
             return;
         case ShipState::DOCKED:
             update_cargo();
             break;
         case ShipState::MOVING:
             CivilianShip::update();
-            //TODO - dock_at(curr_port); //the chat point we are tring to dock where we been - so i dont know if it logical issue or not
             break;
         case W_REFUELING:
             return;
@@ -26,7 +26,7 @@ void Freighter::update(){
 }
 
 void Freighter::update_cargo() {
-    auto cp =curr_port.lock();
+    auto cp = next_port.lock();
     if (!cp) return;
     int i = is_exists(cp->get_name());
     if(i == -1) {return;}
@@ -43,7 +43,7 @@ void Freighter::update_cargo() {
 }
 
 void Freighter::describe() const {
-    const auto cp = curr_port.lock();
+    const auto cp = next_port.lock();
     const string target_name = cp ? cp->get_name() : "None";
     std::cout << "Freighter " << name << " at"  << position  << " fuel: "<< curr_fuel << " resistance: " << resistance
         << " Moving to " << target_name << "on course "<< to_degrees(rad_angle)<<"deg , speed "<<curr_speed<< " nm/hr moving to"<<
@@ -70,20 +70,3 @@ int Freighter::is_exists(const string& port_name) const{
     return -1;
 }
 
-//
-// void Freighter::set_destination(weak_ptr<Port> dest, double speed){
-//     if (auto port = dest.lock()){
-//         angle_to(port->get_pos());
-//         current_speed = speed;
-//     }
-// }
-//
-// void Freighter::set_course(double speed, double angle){
-//     Ship::angle = angle;
-//     current_speed = speed;
-// }
-//
-// void Freighter::set_destination(const Port &dest, double speed) {
-//     curr_speed = speed < max_speed ? speed : max_speed;
-//
-// }

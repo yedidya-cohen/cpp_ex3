@@ -19,7 +19,6 @@ public:
     void update() override;
     void describe() const override;
 
-    void refueling(double amount);
 
     //data structure
 
@@ -34,11 +33,10 @@ private:
         std::vector<bool> visited;  // Track visited ports by index
     };
     vector<string> visited;
-    enum PatrolState {W_REFUEL=0, REFUEL=1,DOCK=2,DEST=3,NONE=4};
+    enum PatrolState {REFUEL=0,DOCK=1,DEST=2,NONE=3};
     PatrolState patrolState;
     where_to w_g;
     queue<pair<weak_ptr<Port>,double>> next;
-    weak_ptr<Port> current_target;
     string first_port;
 };
 

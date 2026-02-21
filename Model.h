@@ -40,16 +40,16 @@ public:
     void describe() const;
 
 
-    void course(string& ship_name,double angle, double speed);
-    void position(string& ship_name, Point& p, double speed);
-    void destination(string& ship_name, string& port_name, double speed);
+    void course(const string& ship_name,double angle, double speed);
+    void position(const string& ship_name, Point& p, double speed);
+    void destination(const string& ship_name, string& port_name, double speed);
     //
-    void load_at(string& ship_name, string& port_name);
-    void unload_at(string& ship_name, string& port_name, int amount);
-    void dock_at(string& ship_name, string& port_name);
-    void attack(string& ship_name, string& ship_target);
-    void refuel(string& ship_name);
-    void stop(string& ship_name);
+    void load_at(const string& ship_name, string& port_name);
+    void unload_at(const string& ship_name, string& port_name, int amount);
+    void dock_at(const string& ship_name, string& port_name);
+    void attack(const string& ship_name, string& ship_target);
+    void refuel(const string& ship_name);
+    void stop(const string& ship_name);
     //
     // const Port& get_port(int index) const; //not needed
 

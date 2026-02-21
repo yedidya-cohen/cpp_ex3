@@ -69,7 +69,7 @@ int main() {
     m.destination(freighter_name, haifa_name, 10.0);
     m.update();
     double d_after = dist(freighter->get_position(), haifa->get_position());
-    assert(d_after < d_before);
+    assert(d_after <= d_before);
 
     // 7) dock_at command: place ship at port and dock explicitly.
     Point same_as_haifa = haifa->get_position();

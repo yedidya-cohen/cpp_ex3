@@ -1,6 +1,7 @@
 #ifndef EX3_CIVILIANSHIP_H
 #define EX3_CIVILIANSHIP_H
 
+#include "Port.h"
 # include "Ship.h"
 
 class CivilianShip : public Ship
@@ -18,16 +19,22 @@ public:
 
     void refuel();
 
-    void for_port(); //for port after refuel
-
-    void been_attacked(bool win_lose); //true mean lose
+    void been_attacked(bool win_lose); //true mean win
     virtual void describe() const = 0;
 
     double get_resistance() const;
-    //TODO - Casting to Freighter
+
+
     virtual void load_at(shared_ptr<Port>& p);
     virtual void unload_at(shared_ptr<Port>& p, int amount);
-    //
+
+    void set_destination(weak_ptr<Port> p, double speed);
+    //   a - start, b- end
+    //   double cross_product = (cx - ax) * (by - ay) - (cy - ay) * (bx - ax);
+    //   bool is_withX = (cx >= std::min(ax, bx)) && (cx <= std::max(ax, bx));
+    //   bool is_WithY = (cy >= std::min(ay, by)) && (cy <= std::max(ay, by));
+
+
     // void attacked(bool win_lose);
     // virtual void set_destination(const Port& dest, double speed) = 0;
     // virtual void refuel() = 0;
@@ -50,7 +57,7 @@ public:
 protected:
     double curr_fuel, resistance;
     double max_fuel, consumption;
-    weak_ptr<Port> curr_port;
+    weak_ptr<Port> next_port, docked_port; //next - target - always exsist, docekd - nullptr unless we in port
 };
 
 

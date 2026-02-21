@@ -33,9 +33,10 @@ vector<weak_ptr<Port>> Model::get_ports() const {
 }
 
 void Model::update() const {
-    for (auto& s: ships){s->update();}
     for (auto& p: pirates){p->update();}
     for (auto& p: ports){p->update();}
+    for (auto& s: ships){s->update();}
+
 }
 
 //note - save but i intentd not to use default - everything is pointers - no need to check default
@@ -50,7 +51,6 @@ bool Model::create_freighter_ship(Ship::Data& d,double fuel, double max_fuel, do
         cerr << "Ship with name:" << d.name << "already exists \n";
         return false;
     }
-    // TODO: create class of freighter - depens on class
     //Data d, int max_capacity,int cargo, int resistance, Port& destination
     auto freighter = make_shared<Freighter>(d, fuel, max_fuel, consumption, resistance, max_capacity, cargo);
     ships.emplace_back(freighter);
@@ -62,7 +62,6 @@ bool Model::create_patrol_ship(Ship::Data& d,double fuel, double max_fuel, doubl
         cerr << "Ship with name:" << d.name << "already exists \n";
         return false;
     }
-    //TODO - depens on patrol c'tors
     auto patrol = make_shared<Patrol>(d,fuel,max_fuel,consumption,resistance);
     ships.emplace_back(patrol);
     return true;
@@ -73,7 +72,6 @@ bool Model::create_pirate_ship (Ship::Data& d,double range,double force){
         cerr << "Ship with name:" << d.name << "already exists \n";
         return false;
     }
-    //TODO - depens on C'tor of pirets!
     auto pirate = make_shared<Cruiser>(d,range,force);
     pirates.emplace_back(pirate);
     return true;
@@ -85,7 +83,6 @@ bool Model::create_port(string name,const Point& pos ,double fuel_production, do
         cout<< "Port with name:" << name << "already exists \n";
         return false;
     }
-    //TODO -depens on C'tor of ports!
     auto port = make_shared<Port>(name,pos,fuel_production,fuel);
     ports.emplace_back(port);
     return true;
@@ -142,7 +139,7 @@ bool Model::attacking(const string& attacked, int force) {
     }
 
     const bool win = force > target->get_resistance();
-    target->been_attacked(win);
+    target->been_attacked(!win);
     return win;
 }
 
@@ -158,63 +155,64 @@ void Model::describe() const {
     for (auto& s : ports) {s->describe();}
 }
 
-void Model::course(string &ship_name, double angle, double speed) {
+void Model::course(const string &ship_name, double angle, double speed) {
+    if (angle<0 || angle>360){cerr<<"Wrong angle, should be 0-360"<<endl;return;}
     if (auto s= get_ship_by_name(ship_name)) {s->set_course(angle,speed);}
     else if (auto v = get_pirate_ship_by_name(ship_name)) { v->set_course(angle, speed);}
     else {cerr<<"Cannot set course because " << ship_name << " doesn't exists" << endl;}
 }
 
-void Model::position(string &ship_name, Point &p, double speed) {
+void Model::position(const string &ship_name, Point &p, double speed) {
     if (auto s= get_ship_by_name(ship_name)) {s->set_pos(p,speed);}
     else if (auto v = get_pirate_ship_by_name(ship_name)) {v->set_pos(p, speed);}
     else {cerr<<"Cannot set position because " << ship_name << " doesn't exists" << endl;}
 
 }
 
-void Model::destination(string &ship_name, string &port_name, double speed) {
+void Model::destination(const string &ship_name, string &port_name, double speed) {
     shared_ptr<Port> p = get_port_by_name(port_name);
     if (!p) { cerr << "cannot find port named " << port_name << endl; return;}
     if (auto s= get_ship_by_name(ship_name)) {s->set_destination(p,speed);}
     else {cerr<<"Cannot set position because " << ship_name << " doesn't exists" << endl;}
 }
 
-//check for cast to frighter
-void Model::load_at(string &ship_name, string &port_name) {
+
+void Model::load_at(const string &ship_name, string &port_name) {
     auto p = get_port_by_name(port_name);
     if (!p) {cerr << "cannot find port named " << port_name << endl; return;}
     //what do i do
-    if (auto s= get_ship_by_name(ship_name)) {s->load_at(p);}
-    else {cerr << "Cannot find ship by name " << ship_name;}
+    if(const auto f = dynamic_pointer_cast<Freighter>(get_ship_by_name(ship_name))) {f->load_at(p);}
+    else {cerr << "Cannot find Freighter ship by name " << ship_name;}
 }
 
 
-void Model::unload_at(string &ship_name, string &port_name, int amount) {
+void Model::unload_at(const string &ship_name, string &port_name, int amount) {
     auto p = get_port_by_name(port_name);
     if (!p) {cerr << "cannot find port named " << port_name << endl; return;}
-    if (auto s= get_ship_by_name(ship_name)) {s->unload_at(p, amount);}
-    else {cerr << "Cannot find ship by name " << ship_name;}
+    if(const auto f = dynamic_pointer_cast<Freighter>(get_ship_by_name(ship_name))) {f->unload_at(p,amount);}
+    else {cerr << "Cannot find Freighter ship by name " << ship_name;}
 }
 
-void Model::dock_at(string &ship_name, string &port_name) {
+void Model::dock_at(const string &ship_name, string &port_name) {
     auto p = get_port_by_name(port_name);
     if (!p) {cerr << "cannot find port named " << port_name << endl; return;}
     if (auto s= get_ship_by_name(ship_name)) {s->dock_at(p);}
     else {cerr << "Cannot find ship by name " << ship_name;}
 }
 
-void Model::attack(string &ship_name, string &ship_target) {
+void Model::attack(const string &ship_name, string &ship_target) {
     auto pirate = get_pirate_ship_by_name(ship_name);
     if (!pirate) {cerr<<"Cannot find ship by name " << ship_name;}
     auto target = get_ship_by_name(ship_target);
     pirate->attack(target);
 }
 
-void Model::refuel(string &ship_name) {
+void Model::refuel(const string &ship_name) {
     if (auto s= get_ship_by_name(ship_name)) {s->refuel();}
     else {cerr << "Cannot find ship by name " << ship_name;}
 }
 
-void Model::stop(string &ship_name) {
+void Model::stop(const string &ship_name) {
     if (auto s= get_ship_by_name(ship_name)) {s->stop();}
     else if (auto v = get_pirate_ship_by_name(ship_name)) {v->stop();}
     else {cerr<<"Cannot find ship by name " << ship_name << endl;}

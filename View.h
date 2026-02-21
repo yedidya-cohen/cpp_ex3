@@ -19,6 +19,8 @@ private:
     int grid_size;
     double scale;
     Point origin;
+    constexpr static int grid_max = 30;
+    constexpr static  int grid_min = 6;
 };
 
 

@@ -5,39 +5,54 @@
 #ifndef EX3_CONTROLLER_H
 #define EX3_CONTROLLER_H
 #include <iostream>
+#include <map>
+#include <functional>
 
 #include "View.h"
 #include "Model.h"
 
+using namespace std;
 
 class Controller {
 public:
+    Controller(const View& v):view(v){}
     void simulate();
 
+private:
+    static constexpr double FREIGHTER_MAX_SPEED = 40.0;
+    static constexpr double FREIGHTER_MAX_FUEL = 500000.0;
+    static constexpr double FREIGHTER_CONSUMPTION = 1000.0;
+
+    static constexpr double CRUISER_MAX_SPEED = 75.0;
+
+    static constexpr double PATROL_MAX_SPEED = 15.0;
+    static constexpr double PATROL_MAX_FUEL = 900000.0;
+    static constexpr double PATROL_CONSUMPTION = 2000.0;
+
+    void ship_commands(const string& ship_name);
     //Model
-    void status();
-    void go();
-    void create_s();
+    void status() const;
+    void go() const;
+    void create_s() const;
 
     //View
     void defaultSize();
     void set_size();
     void set_zoom();
     void set_pan();
-    void show();
+    void show() const;
 
    //ships
-    void set_course();
-    void set_position();
-    void set_destination();
-    void load_at();
-    void unload_at();
-    void dock_at();
-    void attack();
-    void refuel();
-    void stop();
+    void set_course(const string &ship_name);
+    void set_position(const string& ship_name);
+    void set_destination(const string& ship_name);
+    void load_at(const string& ship_name);
+    void unload_at(const string& ship_name);
+    void dock_at(const string& ship_name);
+    void attack(const string& ship_name);
+    void refuel(const string& ship_name);
+    void stop(const string& ship_name);
 
-private:
     View view;
 };
 

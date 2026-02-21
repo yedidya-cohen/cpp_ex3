@@ -1,5 +1,3 @@
-
-
 #include "Cruiser.h"
 #include "CivilianShip.h"
 #include "Model.h"
@@ -28,7 +26,7 @@ void Cruiser::describe() const {
 //nm/hr
 //
 
-//TODO: 2 cmd of attack, what to do?
+
 void Cruiser::attack(weak_ptr<CivilianShip> s) {
     auto sp = s.lock();
     if (!sp) {return;}

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <iomanip>
 using namespace std;
-//TODO - need to check conversions from 0 to 90
+
 // angle units conversion functions
 double to_radians(double theta_d);
 double to_degrees(double theta_r);

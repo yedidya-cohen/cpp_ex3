@@ -79,8 +79,6 @@ public:
 
     virtual void describe() const = 0;
 
-    void set_destination(weak_ptr<Port> p, double speed); //TODO: donwgrade to civillianship
-
     void set_state(const ShipState s) {
         if (state!=DEAD)
             state = s;
