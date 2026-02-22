@@ -33,7 +33,7 @@ public:
     virtual ~Ship() = default; //abstract
 
     explicit Ship(const Data& d):name(d.name),curr_speed(d.curr_speed)
-        ,rad_angle(to_radians(d.angle)),max_speed(d.max_speed), position(d.pos),state(d.state) {}
+        ,rad_angle(to_radians(d.angle)),max_speed(d.max_speed), position(d.pos),state(d.state),is_moving(false) {}
 
     Ship(const Ship& other) = default;
 
@@ -60,6 +60,8 @@ public:
 
     //course command
     void set_course(double angle,double speed) {
+        if (state!=W_REFUELING && state!=DEAD) {state = MOVING;}
+        if (W_REFUELING) {is_moving = true;}
         this->rad_angle = to_radians(angle);
         this->curr_speed = speed;
     }
@@ -72,7 +74,8 @@ public:
 
     void set_pos(Point p,double speed) {
         //calc the angle to this pos - set target
-        state = MOVING;
+        if (state!=W_REFUELING && state!=DEAD) {state = MOVING;}
+        if (W_REFUELING) {is_moving = true;}
         curr_speed = speed;
         rad_angle = std::atan2(p.y-position.y,p.x-position.x);
     }
@@ -89,6 +92,7 @@ protected:
     double curr_speed, rad_angle; // angle is save in radiants, to output need to convert to degree and add 90 (to clock wise turn)
     double max_speed;
     Point position;
+    bool is_moving;
     ShipState state;
 
 

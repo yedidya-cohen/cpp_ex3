@@ -43,7 +43,6 @@ void Patrol::update() {
         case STOPPED:
             state = MOVING;
             if (next_port.expired()) {next_step();}
-            //TODO: next_step if completed all ports puts us in STOPPED and we get stuck in a loop
         default:
             assert("bad bad");
     }
@@ -114,8 +113,8 @@ void Patrol::next_step() {
         if (this->get_position() == start_port_sp->get_position()) {
             // Mission Complete
             //is_patrolling = false; // Turn off auto-pilot
-            stop(); // Optional: ensure ship is stopped
-            //state = DEAD;
+            stop();
+            state = DEAD;
         } else {
             // Loop finished, but we must return to base
             set_destination(start_port_sp, curr_speed);

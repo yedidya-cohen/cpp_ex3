@@ -31,7 +31,7 @@ public:
     vector<weak_ptr<Cruiser>> get_pirates() const;
     vector<weak_ptr<Port>> get_ports() const;
 
-    //TODO - change to private if not needed
+
     const shared_ptr<Port> get_port_by_name(const string& name);
     const shared_ptr<CivilianShip> get_ship_by_name(const string& name);
     const shared_ptr<Cruiser> get_pirate_ship_by_name(const string& name);

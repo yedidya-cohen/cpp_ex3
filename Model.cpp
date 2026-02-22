@@ -34,8 +34,8 @@ vector<weak_ptr<Port>> Model::get_ports() const {
 
 void Model::update() const {
     for (auto& p: pirates){p->update();}
-    for (auto& p: ports){p->update();}
     for (auto& s: ships){s->update();}
+    for (auto& p: ports){p->update();}
 
 }
 

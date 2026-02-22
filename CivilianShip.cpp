@@ -87,6 +87,7 @@ void CivilianShip::unload_at(shared_ptr<Port> &p, int amount) {
 }
 
 void CivilianShip::set_destination(weak_ptr<Port> p, double speed) {
+
     auto sp = p.lock();
     if (!sp) return;
     Point p_dest = sp->get_position();

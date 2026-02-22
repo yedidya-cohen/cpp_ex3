@@ -108,8 +108,9 @@ int main() {
     m.position(freighter_name, p1, 5.0);
     assert(freighter->get_state() == ShipState::MOVING);
     m.attack(cruiser_name, freighter_name);
+    Point prev = freighter->get_position();
     m.update(); // cruiser executes queued attack in update()
-    assert(freighter->get_state() == ShipState::STOPPED);
+    assert(freighter->get_position() == prev);
 
     // 13) describe() smoke test for all entities.
     m.describe();

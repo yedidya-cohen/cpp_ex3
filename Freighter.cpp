@@ -1,4 +1,7 @@
 #include "Freighter.h"
+
+#include <assert.h>
+
 #include "Port.h"
 
 
@@ -11,7 +14,7 @@ void Freighter::update(){
     switch (state) {
         case DEAD:
             return;
-        case STOPPED: //only hen attack
+        case STOPPED: //only when attack/start
             state = MOVING;
             return;
         case ShipState::DOCKED:
@@ -21,22 +24,29 @@ void Freighter::update(){
             CivilianShip::update();
             break;
         case W_REFUELING:
-            return;
+            break;
+        default:
+            assert("what happend??");
     }
+    // set dest - nextport,pos - setpos - position
 }
 
 void Freighter::update_cargo() {
-    auto cp = next_port.lock();
+    auto cp = docked_port.lock(); //
     if (!cp) return;
     int i = is_exists(cp->get_name());
-    if(i == -1) {return;}
+    if(i == -1) {
+        if (is_moving) {is_moving = false; state = MOVING;}
+        return;
+    }
     int mis = missions[i].second;
     if (mis > 0) {cargo = max_capacity;}
     else {
-        if (cargo + mis >= 0) {
+        if (cargo + mis >= 0) { //mis is negative
             cargo += mis;
         }else {
-            //TODO: error - couerr
+            cargo = 0;
+            cerr<<"try to unload more than exsist - WARNING"<<endl;
         }
     }
     missions.erase(missions.begin() + i);
@@ -45,9 +55,11 @@ void Freighter::update_cargo() {
 void Freighter::describe() const {
     const auto cp = next_port.lock();
     const string target_name = cp ? cp->get_name() : "None";
+    // is_exists(cp->get_name()) != -1 :  , mission[i].second > 1 ? "loading at" : "unloading at" ;
     std::cout << "Freighter " << name << " at"  << position  << " fuel: "<< curr_fuel << " resistance: " << resistance
         << " Moving to " << target_name << "on course "<< to_degrees(rad_angle)<<"deg , speed "<<curr_speed<< " nm/hr moving to"<<
            "loadin/unloding dest" <<endl; //TODO need to finish
+    //
 }
 
 void Freighter::load_at(shared_ptr<Port>& p) {
