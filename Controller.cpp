@@ -20,7 +20,13 @@ void Controller::simulate() {
         auto find = func.find(line);
         // if in map -> run command else print error
         if(find != func.end()) {find->second();}
-        else { ship_commands(line);}
+        else {
+            if (line.size() > 12) {
+                cerr << "Invalid ship name: must be at most 12 characters" << endl;
+                continue;
+            }
+            ship_commands(line);
+        }
 
     } while(line != "EXIT"); //exit = bye bye
 
@@ -80,32 +86,58 @@ void Controller::go() const {
     Model::get_instance().update();
 }
 
-//TODO - take care for () - in position and in create
 void Controller::create_s() const{
-    string args[7];
-    int i = 0;
-    while (i < 7 && cin >> args[i]) {
-        i++;}
-    if (i < 6) {cerr<<"not enough arguments "<<endl; return;}
+    // Expected formats:
+    // create <name> Patrol (<x>,<y>) <resistance>
+    // create <name> Freighter (<x>,<y>) <resistance> <capacity>
+    // create <name> Cruiser (<x>,<y>) <attack_force> <range>
+    string name, kind;
+    char lparen = '\0', comma = '\0', rparen = '\0';
+    double x = 0.0, y = 0.0, res_or_force = 0.0;
+    int optional = 0;
 
-    Data d = {args[0], 0.0, 0.0,  40,
-        Point(stod(args[2]), stod(args[3])),ShipState::STOPPED};
+    if (!(cin >> name >> kind >> lparen >> x >> comma >> y >> rparen >> res_or_force)) {
+        cerr << "not enough arguments " << endl;
+        return;
+    }
 
-    if (args[1] == "Freighter") {
-        if (i!=7){cerr<<"not enough arguments "<<endl; return;}
-        Model::get_instance().create_freighter_ship(d, FREIGHTER_MAX_FUEL, FREIGHTER_MAX_FUEL, FREIGHTER_CONSUMPTION, stod(args[5]), stoi(args[6]), 0);
+    if (name.size() > 12) {
+        cerr << "Invalid ship name: must be at most 12 characters" << endl;
+        return;
     }
-    else if (args[1] == "Cruiser") {
-        if (i!=7){cerr<<"not enough arguments "<<endl; return;}
-        d.max_speed = CRUISER_MAX_SPEED;
-        Model::get_instance().create_pirate_ship(d,stod(args[6]),stod(args[5]));
+
+    if (lparen != '(' || comma != ',' || rparen != ')') {
+        cerr << "bad coordinate format, expected (<x>,<y>)" << endl;
+        return;
     }
-    else if (args[1] == "Patrol") {
-        if (i!=6){cerr<<"not enough arguments "<<endl; return;}
+
+    Data d = {name, 0.0, 0.0, FREIGHTER_MAX_SPEED, Point(x, y), ShipState::STOPPED};
+
+    if (kind == "Patrol") {
         d.max_speed = PATROL_MAX_SPEED;
-        Model::get_instance().create_patrol_ship(d,PATROL_MAX_FUEL,PATROL_MAX_FUEL,PATROL_CONSUMPTION,stod(args[5]));
+        Model::get_instance().create_patrol_ship(
+            d, PATROL_MAX_FUEL, PATROL_MAX_FUEL, PATROL_CONSUMPTION, res_or_force
+        );
+        return;
     }
-    else{cerr << "There is no ship like that! bye"<<endl; return;}
+
+    if (!(cin >> optional)) {
+        cerr << "not enough arguments " << endl;
+        return;
+    }
+
+    if (kind == "Freighter" || kind == "Freigther") {
+        Model::get_instance().create_freighter_ship(
+            d, FREIGHTER_MAX_FUEL, FREIGHTER_MAX_FUEL, FREIGHTER_CONSUMPTION, res_or_force, optional, 0
+        );
+    }
+    else if (kind == "Cruiser") {
+        d.max_speed = CRUISER_MAX_SPEED;
+        Model::get_instance().create_pirate_ship(d, optional, res_or_force);
+    }
+    else {
+        cerr << "There is no ship like that! bye" << endl;
+    }
 }
 
 void Controller::set_course(const string &ship_name) {
@@ -115,47 +147,65 @@ void Controller::set_course(const string &ship_name) {
 }
 
 void Controller::set_position(const string& ship_name) {
-    // intentionally left as requested //TODO
-    (void)ship_name;
+    // Expected format after "<ship> position": (<x>,<y>) <speed>
+    char lparen = '\0', comma = '\0', rparen = '\0';
+    double x = 0.0, y = 0.0, speed = 0.0;
+    if (!(cin >> lparen >> x >> comma >> y >> rparen >> speed)) {
+        cerr << "not enough arguments " << endl;
+        return;
+    }
+    if (lparen != '(' || comma != ',' || rparen != ')') {
+        cerr << "bad coordinate format, expected (<x>,<y>)" << endl;
+        return;
+    }
+    Point p(x, y);
+    string ship = ship_name;
+    Model::get_instance().position(ship, p, speed);
 }
 
 void Controller::set_destination(const string& ship_name) {
     string port_name;
     double speed = 0.0;
     if (!(cin >> port_name >> speed)) {cerr << "not enough arguments " << endl; return;}
-    Model::get_instance().destination(ship_name, port_name, speed);
+    string ship = ship_name;
+    Model::get_instance().destination(ship, port_name, speed);
 }
 
 void Controller::load_at(const string& ship_name) {
     string port_name;
     if (!(cin >> port_name)) {cerr << "not enough arguments " << endl; return;}
-    Model::get_instance().load_at(ship_name, port_name);
+    string ship = ship_name;
+    Model::get_instance().load_at(ship, port_name);
 }
 
 void Controller::unload_at(const string& ship_name) {
     string port_name;
     int amount = 0;
     if (!(cin >> port_name >> amount)) {cerr << "not enough arguments " << endl; return;}
-    Model::get_instance().unload_at(ship_name, port_name, amount);
+    string ship = ship_name;
+    Model::get_instance().unload_at(ship, port_name, amount);
 }
 
 void Controller::dock_at(const string& ship_name) {
     string port_name;
     if (!(cin >> port_name)) {cerr << "not enough arguments " << endl; return;}
-    Model::get_instance().dock_at(ship_name, port_name);
+    string ship = ship_name;
+    Model::get_instance().dock_at(ship, port_name);
 }
 
 void Controller::attack(const string& ship_name) {
     string target_ship;
     if (!(cin >> target_ship)) {cerr << "not enough arguments " << endl; return;}
-    Model::get_instance().attack(ship_name, target_ship);
+    string ship = ship_name;
+    Model::get_instance().attack(ship, target_ship);
 }
 
 void Controller::refuel(const string& ship_name) {
-    Model::get_instance().refuel(ship_name);
+    string ship = ship_name;
+    Model::get_instance().refuel(ship);
 }
 
 void Controller::stop(const string& ship_name) {
-    Model::get_instance().stop(ship_name);
+    string ship = ship_name;
+    Model::get_instance().stop(ship);
 }
-
