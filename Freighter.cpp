@@ -26,7 +26,8 @@ void Freighter::update(){
         case W_REFUELING:
             break;
         default:
-        assert(false && "Freighter::update reached invalid state");
+            cerr<< "Freighter::update reached invalid state";
+            break;
 
     }
     // set dest - nextport,pos - setpos - position

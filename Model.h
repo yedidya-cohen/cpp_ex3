@@ -58,11 +58,10 @@ public:
     // const Port& get_port(int index) const; //not needed
 
     bool attacking(const std::string& attacked, int force);
-    void add_to_refueling(const std::string& name, std::shared_ptr<Port> p);
-    // shared_ptr<Port> defualt_port();
+
 
 private:
-    Model() = default; //singleton
+    Model(); //singleton
     ~Model() = default;
     std::vector<std::shared_ptr<Cruiser>> pirates;
     std::vector<std::shared_ptr<CivilianShip>> ships;

@@ -47,7 +47,7 @@ void Patrol::update() {
             if (next_port.expired()) {next_step();}
             break;
         default:
-            assert(false && "Patrol::update reached invalid ShipState");
+            cerr << "Patrol::update reached invalid ShipState";
             break;
     }
 }

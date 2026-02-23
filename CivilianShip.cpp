@@ -60,10 +60,7 @@ void CivilianShip::add_fuel(double f) {
 
 void CivilianShip::refuel() {
     if (state == DOCKED) {
-        if (auto p = docked_port.lock()) {
-            Model::get_instance().add_to_refueling(name, p);
-            state = W_REFUELING;
-        }
+        if (auto p = docked_port.lock()) {state = W_REFUELING;}
     }
 }
 

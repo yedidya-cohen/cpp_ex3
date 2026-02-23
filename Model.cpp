@@ -7,6 +7,11 @@
 
 using namespace std;
 
+
+Model::Model() {
+    create_port();
+}
+
 vector<weak_ptr<CivilianShip>> Model::get_ships() const {
     vector<weak_ptr<CivilianShip>> out;
     out.reserve(ships.size());
@@ -136,12 +141,6 @@ bool Model::attacking(const string& attacked, int force) {
     const bool win = force > target->get_resistance();
     target->been_attacked(!win);
     return win;
-}
-
-void Model::add_to_refueling(const string &name, shared_ptr<Port> p) {
-    shared_ptr<CivilianShip> s = get_ship_by_name(name);
-    if (!s) {return; }
-    p->add_to_queue(s);
 }
 
 void Model::describe() const {
