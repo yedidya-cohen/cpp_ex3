@@ -5,6 +5,8 @@
 #include "Patrol.h"
 #include "Port.h"
 
+using namespace std;
+
 vector<weak_ptr<CivilianShip>> Model::get_ships() const {
     vector<weak_ptr<CivilianShip>> out;
     out.reserve(ships.size());
@@ -32,19 +34,12 @@ vector<weak_ptr<Port>> Model::get_ports() const {
     return out;
 }
 
-void Model::update() const {
+void Model::update() {
     for (auto& p: pirates){p->update();}
     for (auto& s: ships){s->update();}
     for (auto& p: ports){p->update();}
 
 }
-
-//note - save but i intentd not to use default - everything is pointers - no need to check default
-// shared_ptr<Port> Model::defualt_port() {
-//     shared_ptr<Port> p = make_shared<Port>("", Point(-1,-1), -1, -1 );
-//     return p;
-// }
-
 
 bool Model::create_freighter_ship(Ship::Data& d,double fuel, double max_fuel, double consumption, double resistance ,int max_capacity,int cargo) {
     if (is_civil_exists(d.name)) {
@@ -182,7 +177,7 @@ void Model::load_at(const string &ship_name, string &port_name) {
     if (!p) {cerr << "cannot find port named " << port_name << endl; return;}
     //what do i do
     if(const auto f = dynamic_pointer_cast<Freighter>(get_ship_by_name(ship_name))) {f->load_at(p);}
-    else {cerr << "Cannot find Freighter ship by name " << ship_name;}
+    else {cerr << "Cannot find Freighter ship by name " << ship_name  << endl;}
 }
 
 
@@ -190,25 +185,34 @@ void Model::unload_at(const string &ship_name, string &port_name, int amount) {
     auto p = get_port_by_name(port_name);
     if (!p) {cerr << "cannot find port named " << port_name << endl; return;}
     if(const auto f = dynamic_pointer_cast<Freighter>(get_ship_by_name(ship_name))) {f->unload_at(p,amount);}
-    else {cerr << "Cannot find Freighter ship by name " << ship_name;}
+    else {cerr << "Cannot find Freighter ship by name " << ship_name  << endl;}
 }
 
 void Model::dock_at(const string &ship_name, string &port_name) {
     auto p = get_port_by_name(port_name);
     if (!p) {cerr << "cannot find port named " << port_name << endl; return;}
     if (auto s= get_ship_by_name(ship_name)) {s->dock_at(p);}
-    else {cerr << "Cannot find ship by name " << ship_name;}
+    else {cerr << "Cannot find ship by name " << ship_name  << endl;}
 }
 
-void Model::attack(const string &ship_name, string &ship_target) {
+void Model::attack(const string &ship_name, const string &ship_target) {
     auto pirate = get_pirate_ship_by_name(ship_name);
-    if (!pirate) {cerr<<"Cannot find ship by name " << ship_name;}
+    if (!pirate) {cerr<<"Cannot find Cruiser by name " << ship_name << endl; return;}
     auto target = get_ship_by_name(ship_target);
+    if (!target) {cerr<<"Cannot find Ship by name " << ship_target << endl; return;}
     pirate->attack(target);
 }
 
 void Model::refuel(const string &ship_name) {
-    if (auto s= get_ship_by_name(ship_name)) {s->refuel();}
+    if (auto s= get_ship_by_name(ship_name)){
+        if (s->get_state() == Ship::ShipState::DOCKED){
+            auto p = s->get_docked_port();
+            if (p) {
+                p->add_to_queue(s);
+                s->refuel();
+            }
+        }
+    }
     else {cerr << "Cannot find ship by name " << ship_name;}
 }
 

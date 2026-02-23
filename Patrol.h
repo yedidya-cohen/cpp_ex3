@@ -1,7 +1,3 @@
-//
-// Created by yedid on 18/01/2026.
-//
-
 #ifndef EX3_PATROL_H
 #define EX3_PATROL_H
 
@@ -20,8 +16,6 @@ public:
     void describe() const override;
 
 
-    //data structure
-
 private:
     void next_step();
     void my_3_steps();
@@ -32,12 +26,12 @@ private:
         bool r_l; // true = right, false = left
         std::vector<bool> visited;  // Track visited ports by index
     };
-    vector<string> visited;
+    std::vector<std::string> visited;
     enum PatrolState {REFUEL=0,DOCK=1,DEST=2,NONE=3};
     PatrolState patrolState;
     where_to w_g;
-    queue<pair<weak_ptr<Port>,double>> next;
-    string first_port;
+    std::queue<std::pair<std::weak_ptr<Port>,double>> next;
+    std::string first_port;
 };
 
 #endif //EX3_PATROL_H

@@ -1,6 +1,6 @@
 #include "Controller.h"
 
-
+using namespace std;
 
 void Controller::simulate() {
     map<string, function<void()>> func = {

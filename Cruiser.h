@@ -17,13 +17,13 @@ public:
     void update() override;
     void describe() const override;
 
-    void attack(weak_ptr<CivilianShip> s);
+    void attack(std::weak_ptr<CivilianShip> s);
     double get_force() const;
 
 private:
     double range;
     double force;
-    string need_to_attack;
+    std::string need_to_attack;
 };
 
 

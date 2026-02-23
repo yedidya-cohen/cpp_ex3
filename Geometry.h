@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include <iomanip>
-using namespace std;
+
 
 // angle units conversion functions
 double to_radians(double theta_d);
@@ -18,7 +18,7 @@ typedef struct Point {
     Point();
     void print() const;
     bool operator==(const Point& rhs) const;
-    friend ostream& operator<<(ostream& o, const Point& p);
+    friend std::ostream& operator<<(std::ostream& o, const Point& p);
 } Point;
 
 double dist(const Point& p1,const Point& p2);

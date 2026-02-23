@@ -2,6 +2,7 @@
 #include "CivilianShip.h"
 #include "Model.h"
 
+using namespace std;
 
 Cruiser::Cruiser(Data& d, double range, double force): Ship(d), range(range), force(force)
 ,need_to_attack(){}
@@ -19,7 +20,7 @@ void Cruiser::update() {
 
 
 void Cruiser::describe() const {
-    std::cout << "Cruiser " << name << "at"  << position  << "force: "<< force <<" Moving on course "<< to_degrees(rad_angle)
+    std::cout << "Cruiser " << name << " at "  << position  << " force: "<< force <<" Moving on course "<< to_degrees(rad_angle)
     <<"deg , speed "<<curr_speed<< " nm/hr"<<endl;
 }
 //Cruiser Xerxes at (5.00, 25.00), force: 6, Moving on course 270.00 deg, speed 20.00

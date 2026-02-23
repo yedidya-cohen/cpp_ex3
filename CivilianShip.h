@@ -11,7 +11,7 @@ public:
     ~CivilianShip() override = default; //abstract
 
 
-    bool dock_at(shared_ptr<Port> p);
+    bool dock_at(std::shared_ptr<Port> p);
     virtual void update();
 
     double missing_fuel() const;
@@ -24,11 +24,10 @@ public:
 
     double get_resistance() const;
 
+    std::shared_ptr<Port> get_docked_port() const;
 
-    virtual void load_at(shared_ptr<Port>& p);
-    virtual void unload_at(shared_ptr<Port>& p, int amount);
 
-    void set_destination(weak_ptr<Port> p, double speed);
+    void set_destination(std::weak_ptr<Port> p, double speed);
     //   a - start, b- end
     //   double cross_product = (cx - ax) * (by - ay) - (cy - ay) * (bx - ax);
     //   bool is_withX = (cx >= std::min(ax, bx)) && (cx <= std::max(ax, bx));
@@ -57,7 +56,9 @@ public:
 protected:
     double curr_fuel, resistance;
     double max_fuel, consumption;
-    weak_ptr<Port> next_port, docked_port; //next - target - always exsist, docekd - nullptr unless we in port
+    std::weak_ptr<Port> next_port, docked_port; //next - target - always exsist, docekd - nullptr unless we in port
+
+    static bool is_on_segment(Point start, Point end, Point port);
 };
 
 

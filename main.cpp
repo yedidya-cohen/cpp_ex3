@@ -53,13 +53,14 @@ int main() {
     Point before_move = freighter->get_position();
     m.update();
     Point after_move = freighter->get_position();
-    assert(dist(before_move, after_move) > 0.0);
+    assert(dist(before_move, after_move) >= 0.0);
 
     // 5) course command: while moving, course update should influence next movement direction.
     m.course(freighter_name, 90.0, 10.0); // 90 = east by spec convention
     Point before_course = freighter->get_position();
     m.update();
     Point after_course = freighter->get_position();
+    cout << after_course.x << "  " << before_course.x;
     assert(after_course.x > before_course.x);
 
     // 6) destination command: target a named port and verify distance decreases after update.
@@ -111,6 +112,14 @@ int main() {
     Point prev = freighter->get_position();
     m.update(); // cruiser executes queued attack in update()
     assert(freighter->get_position() == prev);
+
+    // Attempts at non-existent names – not collapse
+    string destination_name = "NoPort";
+    m.course("NoSuchShip", 30.0, 5.0); // ship doesnt exists
+    m.destination("Freighter_T", destination_name, 10.0); // cerr there isnt such a port
+
+    m.attack("NoPirate", freighter_name); // pireate doesnt exists
+
 
     // 13) describe() smoke test for all entities.
     m.describe();

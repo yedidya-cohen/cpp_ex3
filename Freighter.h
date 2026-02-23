@@ -3,7 +3,7 @@
 
 #include "CivilianShip.h"
 #include <vector>
-using namespace std;
+
 
 class Freighter: public CivilianShip{
 public:
@@ -13,16 +13,16 @@ public:
 
     void update() override;
     void describe() const override;
-    void load_at(shared_ptr<Port>& p) override;
-    void unload_at(shared_ptr<Port>& p, int amount) override;
+    void load_at(std::shared_ptr<Port>& p);
+    void unload_at(std::shared_ptr<Port>& p, int amount);
 
 
 private:
-    int is_exists(const string& port_name) const;
+    int is_exists(const std::string& port_name) const;
     void update_cargo();
     const int max_capacity;
     int cargo;
-    vector<pair<weak_ptr<Port>, int>>  missions;
+    std::vector<std::pair<std::weak_ptr<Port>, int>>  missions;
 
     // enum mission {
     //     None = 0,

@@ -9,12 +9,12 @@
 
 
 
-using namespace std;
+
 class CivilianShip;
 
 class Port{
 public:
-    Port(string name,const Point& pos ,double fuel_production, double fuel): name(std::move(name)), pos(pos), fuel_production(fuel_production), fuel(fuel){
+    Port(std::string name,const Point& pos ,double fuel_production, double fuel): name(std::move(name)), pos(pos), fuel_production(fuel_production), fuel(fuel){
     }
 
     Port(const Port& rhs) = default;
@@ -25,19 +25,19 @@ public:
 
     void update();
 
-    void add_to_queue(const shared_ptr<CivilianShip>& s);
+    void add_to_queue(const std::shared_ptr<CivilianShip>& s);
 
     Point get_position()const {return pos;}
-    string get_name() const {return name;}
+    std::string get_name() const {return name;}
     double get_available_fuel() const {return fuel;}
     void describe() const;
 
 private:
-    string name;
+    std::string name;
     Point pos;
     double fuel_production;
     double fuel;
-    queue<weak_ptr<CivilianShip>> ship_q{};
+    std::queue<std::weak_ptr<CivilianShip>> ship_q{};
 };
 
 #endif

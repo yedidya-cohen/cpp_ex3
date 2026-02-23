@@ -1,6 +1,9 @@
 #include "Geometry.h"
 #include <cmath>
 #include <ctgmath>
+
+using namespace std;
+
 const double pi = 2. * atan2(1., 0.);
 double to_radians(double theta_d) {
     theta_d = 90-theta_d;
@@ -73,7 +76,7 @@ bool Point::operator==(const Point & rhs) const {//nm
 double dist(const Point& p1,const Point& p2) {
     const double dx = p2.x - p1.x;
     const double dy = p2.y - p1.y;
-    return std::sqrt(dx*dx + dy*dy);
+    return sqrt(dx*dx + dy*dy);
 }
 
 ostream& operator<<(ostream& o, const Point& p) {

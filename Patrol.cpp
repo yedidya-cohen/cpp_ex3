@@ -3,6 +3,8 @@
 #include "Port.h"
 #include <assert.h>
 
+using namespace std;
+
 Patrol::Patrol(Data& d,double fuel, double max_fuel, double consumption, double resistance)
         : CivilianShip(d, fuel, max_fuel, consumption, resistance),
           patrolState(NONE),
@@ -43,8 +45,10 @@ void Patrol::update() {
         case STOPPED:
             state = MOVING;
             if (next_port.expired()) {next_step();}
+            break;
         default:
-            assert("bad bad");
+            assert(false && "Patrol::update reached invalid ShipState");
+            break;
     }
 }
 

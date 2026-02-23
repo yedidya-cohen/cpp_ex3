@@ -1,7 +1,3 @@
-//
-// Created by yedid on 04/02/2026.
-//
-
 #ifndef EX3_CONTROLLER_H
 #define EX3_CONTROLLER_H
 #include <iostream>
@@ -11,7 +7,7 @@
 #include "View.h"
 #include "Model.h"
 
-using namespace std;
+
 
 class Controller {
 public:
@@ -29,7 +25,7 @@ private:
     static constexpr double PATROL_MAX_FUEL = 900000.0;
     static constexpr double PATROL_CONSUMPTION = 2000.0;
 
-    void ship_commands(const string& ship_name);
+    void ship_commands(const std::string& ship_name);
     //Model
     void status() const;
     void go() const;
@@ -43,15 +39,15 @@ private:
     void show() const;
 
    //ships
-    void set_course(const string &ship_name);
-    void set_position(const string& ship_name);
-    void set_destination(const string& ship_name);
-    void load_at(const string& ship_name);
-    void unload_at(const string& ship_name);
-    void dock_at(const string& ship_name);
-    void attack(const string& ship_name);
-    void refuel(const string& ship_name);
-    void stop(const string& ship_name);
+    void set_course(const std::string &ship_name);
+    void set_position(const std::string& ship_name);
+    void set_destination(const std::string& ship_name);
+    void load_at(const std::string& ship_name);
+    void unload_at(const std::string& ship_name);
+    void dock_at(const std::string& ship_name);
+    void attack(const std::string& ship_name);
+    void refuel(const std::string& ship_name);
+    void stop(const std::string& ship_name);
 
     View view;
 };

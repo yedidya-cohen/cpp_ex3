@@ -1,24 +1,26 @@
 #include "Port.h"
 #include "CivilianShip.h"
 
+using namespace std;
 
 void Port::update() {
     fuel += fuel_production;
 
-    if (ship_q.empty()) { return;}
+    while (!ship_q.empty()) {
 
     auto ws = ship_q.front();
     ship_q.pop();
     //check that valid
     auto ship = ws.lock();
-    if (!ship) {return;} //actually should not happend but maybe a while than we always serve someone?
-
+    if (!ship) {continue;}
 
     double needed = ship->missing_fuel();
     double supplied = (fuel > needed) ? needed : fuel;
 
     ship->add_fuel(supplied);
     fuel -= supplied;
+        break; // make sure we only serve one
+    }
 }
 
 void Port::add_to_queue(const shared_ptr<CivilianShip>& s) {

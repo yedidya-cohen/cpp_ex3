@@ -1,8 +1,8 @@
 #include "Freighter.h"
-
 #include <assert.h>
-
 #include "Port.h"
+
+using namespace std;
 
 
 Freighter::Freighter(Data& d,double fuel, double max_fuel, double consumption, double resistance ,int max_capacity,int cargo)
@@ -26,7 +26,8 @@ void Freighter::update(){
         case W_REFUELING:
             break;
         default:
-            assert("what happend??");
+        assert(false && "Freighter::update reached invalid state");
+
     }
     // set dest - nextport,pos - setpos - position
 }
@@ -36,7 +37,7 @@ void Freighter::update_cargo() {
     if (!cp) return;
     int i = is_exists(cp->get_name());
     if(i == -1) {
-        if (is_moving) {is_moving = false; state = MOVING;}
+        if (pending_moving) {pending_moving = false; state = MOVING;}
         return;
     }
     int mis = missions[i].second;
@@ -55,10 +56,15 @@ void Freighter::update_cargo() {
 void Freighter::describe() const {
     const auto cp = next_port.lock();
     const string target_name = cp ? cp->get_name() : "None";
-    // is_exists(cp->get_name()) != -1 :  , mission[i].second > 1 ? "loading at" : "unloading at" ;
-    std::cout << "Freighter " << name << " at"  << position  << " fuel: "<< curr_fuel << " resistance: " << resistance
-        << " Moving to " << target_name << "on course "<< to_degrees(rad_angle)<<"deg , speed "<<curr_speed<< " nm/hr moving to"<<
-           "loadin/unloding dest" <<endl; //TODO need to finish
+    string mission_desc = "";
+    int idx = is_exists(target_name);
+    if (idx != -1) {
+        int m = missions[idx].second;
+        mission_desc = m > 0 ? " loading at " + target_name : " unloading at " + target_name;
+    }
+    std::cout << "Freighter " << name << " at "  << position  << " fuel: "<< curr_fuel << " resistance: " << resistance
+        << " Moving to " << target_name << "on course "<< to_degrees(rad_angle)<<"deg , speed "<<curr_speed<< " nm/hr"<<
+           mission_desc <<endl;
     //
 }
 

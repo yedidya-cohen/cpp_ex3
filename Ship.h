@@ -8,10 +8,8 @@
 #include <cmath>
 #include "Geometry.h"
 
-using namespace std;
+
 class Port;
-
-
 
 class Ship {
 public:
@@ -24,7 +22,7 @@ public:
     };
 
     struct Data{
-        string name;
+        std::string name;
         double curr_speed,angle,max_speed;
         Point pos;
         ShipState state;
@@ -33,7 +31,7 @@ public:
     virtual ~Ship() = default; //abstract
 
     explicit Ship(const Data& d):name(d.name),curr_speed(d.curr_speed)
-        ,rad_angle(to_radians(d.angle)),max_speed(d.max_speed), position(d.pos),state(d.state),is_moving(false) {}
+        ,rad_angle(to_radians(d.angle)),max_speed(d.max_speed), position(d.pos),state(d.state),pending_moving(false) {}
 
     Ship(const Ship& other) = default;
 
@@ -54,16 +52,16 @@ public:
     }
 
     //getters
-    string get_name() const{return name;}
+    std::string get_name() const{return name;}
     Point get_position() const {return position;}
     ShipState get_state() const {return state;}
 
     //course command
     void set_course(double angle,double speed) {
         if (state!=W_REFUELING && state!=DEAD) {state = MOVING;}
-        if (W_REFUELING) {is_moving = true;}
+        if (state == W_REFUELING) {pending_moving = true;}
         this->rad_angle = to_radians(angle);
-        this->curr_speed = speed;
+        set_speed(speed);
     }
 
     void stop() {
@@ -75,8 +73,8 @@ public:
     void set_pos(Point p,double speed) {
         //calc the angle to this pos - set target
         if (state!=W_REFUELING && state!=DEAD) {state = MOVING;}
-        if (W_REFUELING) {is_moving = true;}
-        curr_speed = speed;
+        if (state == W_REFUELING) {pending_moving = true;}
+        set_speed(speed);
         rad_angle = std::atan2(p.y-position.y,p.x-position.x);
     }
 
@@ -88,15 +86,18 @@ public:
     }
 
 protected:
-    string name;
+    std::string name;
     double curr_speed, rad_angle; // angle is save in radiants, to output need to convert to degree and add 90 (to clock wise turn)
     double max_speed;
     Point position;
-    bool is_moving;
+    bool pending_moving;
     ShipState state;
 
+    void set_speed(double speed);
 
 };
+
+
 
 using ShipState = Ship::ShipState;
 using Data = Ship::Data;
