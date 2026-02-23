@@ -14,6 +14,7 @@ public:
     Controller(const View& v):view(v){}
     void simulate();
 
+    void file_read_ports(const std::string& file_name);
 private:
     static constexpr double FREIGHTER_MAX_SPEED = 40.0;
     static constexpr double FREIGHTER_MAX_FUEL = 500000.0;

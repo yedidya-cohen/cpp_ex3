@@ -8,7 +8,7 @@ class CivilianShip;
 
 class Cruiser: public Ship{
 public:
-    Cruiser(Data& d,double range,double force);
+    Cruiser(Data& d,double range,int force);
     ~Cruiser() = default;
     Cruiser(const Cruiser& other) = default;
     Cruiser& operator=(const Cruiser& other) = default;
@@ -22,7 +22,7 @@ public:
 
 private:
     double range;
-    double force;
+    int force;
     std::string need_to_attack;
 };
 

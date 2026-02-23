@@ -1,21 +1,25 @@
 #include "Controller.h"
+#include <fstream>
+#include <sstream>
+#include <stdexcept>
 
 using namespace std;
 
 void Controller::simulate() {
     map<string, function<void()>> func = {
-        {"default", [&]() {return;}},
-        {"size", [&]() {return;}},
-        {"zoom", [&]() {return;}},
-        {"pan", [&]() {return;}},
-        {"show", [&]() {return;}},
-        {"status", [&]() {return;}},
-        {"go", [&]() {return;}},
-        {"create", [&]() {return;}}
+        {"default", [&]() {defaultSize();}},
+        {"size", [&]() {set_size();}},
+        {"zoom", [&]() {set_zoom();}},
+        {"pan", [&]() {set_pan();}},
+        {"show", [&]() {show();}},
+        {"status", [&]() {status();}},
+        {"go", [&]() {go();}},
+        {"create", [&]() {create_s();}}
     };
     string line; // saves a word from input
-    do{
-        cin >> line;
+    cin >> line;
+    while(line != "EXIT"){
+
         // look for the word in the map
         auto find = func.find(line);
         // if in map -> run command else print error
@@ -27,9 +31,8 @@ void Controller::simulate() {
             }
             ship_commands(line);
         }
-
-    } while(line != "EXIT"); //exit = bye bye
-
+        cin >> line;
+    }  //exit = bye bye
 }
 
 void Controller::ship_commands(const string &ship_name) {
@@ -126,7 +129,7 @@ void Controller::create_s() const{
         return;
     }
 
-    if (kind == "Freighter" || kind == "Freigther") {
+    if (kind == "Freighter") {
         Model::get_instance().create_freighter_ship(
             d, FREIGHTER_MAX_FUEL, FREIGHTER_MAX_FUEL, FREIGHTER_CONSUMPTION, res_or_force, optional, 0
         );
@@ -208,4 +211,37 @@ void Controller::refuel(const string& ship_name) {
 void Controller::stop(const string& ship_name) {
     string ship = ship_name;
     Model::get_instance().stop(ship);
+}
+
+void Controller::file_read_ports(const std::string &file_name) {
+    ifstream in(file_name);
+    if (!in.is_open()) {
+        throw invalid_argument("Could not open ports file: " + file_name);
+    }
+    string line;
+    size_t line_no = 0;
+    while (getline(in, line)) {
+        ++line_no;
+        if (line.empty()) {
+            continue;
+        }
+        istringstream iss(line);
+        string name;
+        char lparen = '\0', comma = '\0', rparen = '\0';
+        double x = 0.0, y = 0.0, fuel = 0.0, production = 0.0;
+
+        if (!(iss >> name >> lparen >> x >> comma >> y >> rparen >> fuel >> production)) {
+            throw invalid_argument("Bad input format in ports file at line " + to_string(line_no));
+        }
+
+        if (lparen != '(' || comma != ',' || rparen != ')') {
+            throw invalid_argument("Bad coordinate format in ports file at line " + to_string(line_no));
+        }
+        // Reject trailing non-whitespace garbage.
+        string extra;
+        if (iss >> extra) {
+            throw invalid_argument("Unexpected extra token in ports file at line " + to_string(line_no));
+        }
+        Model::get_instance().create_port(name, Point(x, y), production, fuel);
+    }
 }

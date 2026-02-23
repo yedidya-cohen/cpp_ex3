@@ -63,8 +63,8 @@ void Freighter::describe() const {
         int m = missions[idx].second;
         mission_desc = m > 0 ? " loading at " + target_name : " unloading at " + target_name;
     }
-    std::cout << "Freighter " << name << " at "  << position  << " fuel: "<< curr_fuel << " resistance: " << resistance
-        << " Moving to " << target_name << "on course "<< to_degrees(rad_angle)<<"deg , speed "<<curr_speed<< " nm/hr"<<
+    std::cout << "Freighter " << name << " at "  << position  << " status "<< state <<" fuel: "<< curr_fuel << " resistance: " << resistance<< " cargo: "<<cargo
+        << " Moving to " << target_name << " on course "<< to_degrees(rad_angle)<<" deg , speed "<<curr_speed<< " nm/hr"<<
            mission_desc <<endl;
     //
 }
@@ -77,7 +77,7 @@ void Freighter::load_at(shared_ptr<Port>& p) {
 
 void Freighter::unload_at(shared_ptr<Port>& p,int amount) {
     int i = is_exists(p->get_name());
-    if(i == -1){missions.emplace_back(weak_ptr<Port>(p),amount);}
+    if(i == -1){missions.emplace_back(weak_ptr<Port>(p),-amount);}
     else {missions[i].second = missions[i].second > 0 ? 1 : missions[i].second-amount;}
 }
 

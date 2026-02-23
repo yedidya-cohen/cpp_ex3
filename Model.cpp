@@ -9,7 +9,7 @@ using namespace std;
 
 
 Model::Model() {
-    create_port();
+    create_port("Nagoya",{50,5},1000,1000000);
 }
 
 vector<weak_ptr<CivilianShip>> Model::get_ships() const {
@@ -80,7 +80,7 @@ bool Model::create_pirate_ship (Ship::Data& d,double range,double force){
 
 bool Model::create_port(string name,const Point& pos ,double fuel_production, double fuel) {
     if (is_port_exists(name)) {
-        cout<< "Port with name:" << name << "already exists \n";
+        cerr << "Port with name:" << name << "already exists \n";
         return false;
     }
     auto port = make_shared<Port>(name,pos,fuel_production,fuel);

@@ -2,6 +2,7 @@
 #include "Model.h"
 #include "Port.h"
 #include <assert.h>
+#include <memory>
 
 using namespace std;
 
@@ -9,17 +10,13 @@ Patrol::Patrol(Data& d,double fuel, double max_fuel, double consumption, double 
         : CivilianShip(d, fuel, max_fuel, consumption, resistance),
           patrolState(NONE),
           first_port(){
-    w_g.curr = 0;
-    w_g.start = 0;
-    w_g.len = 0;
-    w_g.r_l = true;
 }
 
 void Patrol::describe() const {
     auto t = next_port.lock();
     auto d = docked_port.lock();
     const string target_name = t ? t->get_name() : (d ? d->get_name() : "None");
-    std::cout << "Patrol " << name << " at "  << position  << " fuel: "<< curr_fuel << " resistance: " << resistance
+    std::cout << "Patrol " << name << " at "  << position  <<" state "<<state <<" fuel: "<< curr_fuel << " resistance: " << resistance
     << " Moving to " << target_name << " on course "<< to_degrees(rad_angle)<<" deg , speed "<<curr_speed<< " nm/hr"<<endl;
 }
 

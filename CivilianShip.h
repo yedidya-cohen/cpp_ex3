@@ -54,8 +54,8 @@ public:
     // }
 
 protected:
-    double curr_fuel, resistance;
-    double max_fuel, consumption;
+    double curr_fuel, max_fuel, consumption;;
+    int resistance;
     std::weak_ptr<Port> next_port, docked_port; //next - target - always exsist, docekd - nullptr unless we in port
 
     static bool is_on_segment(Point start, Point end, Point port);

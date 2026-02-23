@@ -19,17 +19,9 @@ public:
 private:
     void next_step();
     void my_3_steps();
-    struct where_to {
-        int curr;
-        int start;
-        int len;
-        bool r_l; // true = right, false = left
-        std::vector<bool> visited;  // Track visited ports by index
-    };
     std::vector<std::string> visited;
     enum PatrolState {REFUEL=0,DOCK=1,DEST=2,NONE=3};
     PatrolState patrolState;
-    where_to w_g;
     std::queue<std::pair<std::weak_ptr<Port>,double>> next;
     std::string first_port;
 };

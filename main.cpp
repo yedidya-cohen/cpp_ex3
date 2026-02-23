@@ -3,127 +3,143 @@
 #include <iostream>
 #include <string>
 
+#include "Controller.h"
 #include "Model.h"
 #include "Port.h"
 
 using namespace std;
 
-int main() {
-    Model& m = Model::get_instance();
-
-    // 1) Singleton sanity check.
-    Model& m2 = Model::get_instance();
-    assert(&m == &m2);
-
-    // 2) Create ports and validate lookup/duplicate behavior.
-    assert(m.create_port("Haifa_T", Point(10, 10), 100, 1000));
-    assert(m.create_port("Ashdod_T", Point(30, 10), 50, 500));
-    assert(!m.create_port("Haifa_T", Point(10, 10), 100, 1000)); // duplicate name must fail
-
-    auto haifa = m.get_port_by_name("Haifa_T");
-    auto ashdod = m.get_port_by_name("Ashdod_T");
-    assert(haifa);
-    assert(ashdod);
-    assert(m.get_ports().size() >= 2);
-
-    // 3) Create ships and validate lookup/duplicate behavior.
-    Data f_data{"Freighter_T", 0.0, 0.0, 40.0, Point(0, 0), ShipState::STOPPED};
-    Data p_data{"Patrol_T", 0.0, 0.0, 15.0, Point(5, 5), ShipState::STOPPED};
-    Data c_data{"Cruiser_T", 0.0, 0.0, 75.0, Point(40, 40), ShipState::STOPPED};
-
-    assert(m.create_freighter_ship(f_data, 300.0, 500.0, 10.0, 8.0, 100, 0));
-    assert(!m.create_freighter_ship(f_data, 300.0, 500.0, 10.0, 8.0, 100, 0)); // duplicate name
-    assert(m.create_patrol_ship(p_data, 700.0, 900.0, 10.0, 10.0));
-    assert(m.create_pirate_ship(c_data, 100.0, 20.0));
-
-    auto freighter = m.get_ship_by_name("Freighter_T");
-    auto patrol = m.get_ship_by_name("Patrol_T");
-    auto cruiser = m.get_pirate_ship_by_name("Cruiser_T");
-    assert(freighter);
-    assert(patrol);
-    assert(cruiser);
-    assert(m.get_ships().size() >= 2);
-    assert(m.get_pirates().size() >= 1);
-
-    // 4) position command: should set MOVING and advance after update.
-    string freighter_name = "Freighter_T";
-    Point p1(0, 20);
-    m.position(freighter_name, p1, 10.0);
-    assert(freighter->get_state() == ShipState::MOVING);
-    Point before_move = freighter->get_position();
-    m.update();
-    Point after_move = freighter->get_position();
-    assert(dist(before_move, after_move) >= 0.0);
-
-    // 5) course command: while moving, course update should influence next movement direction.
-    m.course(freighter_name, 90.0, 10.0); // 90 = east by spec convention
-    Point before_course = freighter->get_position();
-    m.update();
-    Point after_course = freighter->get_position();
-    cout << after_course.x << "  " << before_course.x;
-    assert(after_course.x > before_course.x);
-
-    // 6) destination command: target a named port and verify distance decreases after update.
-    string haifa_name = "Haifa_T";
-    Point freighter_pre_dest = freighter->get_position();
-    double d_before = dist(freighter_pre_dest, haifa->get_position());
-    m.destination(freighter_name, haifa_name, 10.0);
-    m.update();
-    double d_after = dist(freighter->get_position(), haifa->get_position());
-    assert(d_after <= d_before);
-
-    // 7) dock_at command: place ship at port and dock explicitly.
-    Point same_as_haifa = haifa->get_position();
-    m.position(freighter_name, same_as_haifa, 0.0); // move command to exact location
-    m.dock_at(freighter_name, haifa_name);
-    assert(freighter->get_state() == ShipState::DOCKED);
-
-    // 8) refuel command + update: should move through W_REFUELING back to DOCKED after port service.
-    m.refuel(freighter_name);
-    assert(freighter->get_state() == ShipState::W_REFUELING);
-    m.update(); // port serves queue at end of tick
-    assert(freighter->get_state() == ShipState::DOCKED);
-
-    // 9) load/unload commands: currently no direct public cargo getter,
-    // so we assert command path is callable and update does not crash.
-    m.load_at(freighter_name, haifa_name);
-    m.unload_at(freighter_name, haifa_name, 10);
-    m.update();
-
-    // 10) stop command: stop and ensure no movement on following update.
-    m.stop(freighter_name);
-    assert(freighter->get_state() == ShipState::STOPPED);
-    Point before_stop_update = freighter->get_position();
-    m.update();
-    Point after_stop_update = freighter->get_position();
-    assert(dist(before_stop_update, after_stop_update) < 1e-9);
-
-    // 11) attacking() direct API: should return true with overwhelming force and stop target.
-    m.position(freighter_name, p1, 5.0); // put target back into movement state
-    assert(freighter->get_state() == ShipState::MOVING);
-    assert(m.attacking("Freighter_T", 1000));
-    assert(freighter->get_state() == ShipState::STOPPED);
-
-    // 12) attack command (cruiser queued attack) + update.
-    string cruiser_name = "Cruiser_T";
-    m.position(freighter_name, p1, 5.0);
-    assert(freighter->get_state() == ShipState::MOVING);
-    m.attack(cruiser_name, freighter_name);
-    Point prev = freighter->get_position();
-    m.update(); // cruiser executes queued attack in update()
-    assert(freighter->get_position() == prev);
-
-    // Attempts at non-existent names – not collapse
-    string destination_name = "NoPort";
-    m.course("NoSuchShip", 30.0, 5.0); // ship doesnt exists
-    m.destination("Freighter_T", destination_name, 10.0); // cerr there isnt such a port
-
-    m.attack("NoPirate", freighter_name); // pireate doesnt exists
 
 
-    // 13) describe() smoke test for all entities.
+int main(int argc, char** argv) {
+
+   Model& m = Model::get_instance();
+
+    cout << "=====================================================" << endl;
+    cout << "--- Step 1: Initialization ---" << endl;
+
+    // יצירת 3 נמלים על ציר X
+    m.create_port("P1", Point(10.0, 0.0), 5000.0, 50000.0);
+    m.create_port("P2", Point(20.0, 0.0), 5000.0, 50000.0);
+    m.create_port("P3", Point(30.0, 0.0), 5000.0, 50000.0);
+
+    // יצירת ספינת סיור (Patrol) בנקודה (0,0)
+    // פרמטרים: Data, fuel, max_fuel, consumption, resistance
+    Ship::Data pdata{"PatrolX", 0.0, 0.0, 15.0, Point(0.0, 0.0), ShipState::STOPPED};
+    m.create_patrol_ship(pdata, 2000.0, 2000.0, 10.0, 5.0);
+
     m.describe();
+    cout << "=====================================================\n" << endl;
 
-    cout << "All Model.h command checks passed." << endl;
+
+    cout << "--- Step 2: Seeding Initial Destination ---" << endl;
+    string p = "P1";
+    // פוקדים על ה-Patrol לנסוע ל-P1 במהירות 10
+    // זה נותן לו "דחיפה ראשונה" שממנה הוא יתחיל את סבב הסיור
+    m.destination("PatrolX", p, 10.0);
+    m.describe();
+    cout << "=====================================================\n" << endl;
+
+
+    cout << "--- TICK 1: Moving to P1 ---" << endl;
+    m.update();
+    m.describe();
+    cout << "=====================================================\n" << endl;
+
+
+    cout << "--- TICK 2: Arriving at P1 (Should Dock) ---" << endl;
+    // הספינה ב(10,0) -> עוגנת.
+    // Patrol::update אמור להכניס אותה ל-DOCKED ולשנות מצב פנימי ל-REFUEL
+    m.update();
+    m.describe();
+    cout << "=====================================================\n" << endl;
+
+
+    cout << "--- TICK 3: Executing REFUEL Step ---" << endl;
+    // הספינה ב-DOCKED, אמורה להפעיל my_3_steps
+    // הסטטוס הפנימי REFUEL יבקש לתדלק. ייתכן שתראה אותה ב-WREFUELING או חזרה ב-DOCKED
+    m.update();
+    m.describe();
+    cout << "=====================================================\n" << endl;
+
+
+    cout << "--- TICK 4: Executing DOCK Step ---" << endl;
+    // הסטטוס הפנימי מתחלף ל-DOCK
+    m.update();
+    m.describe();
+    cout << "=====================================================\n" << endl;
+
+
+    cout << "--- TICK 5: Executing DEST Step (Finding Next Port) ---" << endl;
+    // הסטטוס הפנימי ב-DEST: פה היא מפעילה next_step!
+    // היא אמורה למצוא את P2 (הקרוב ביותר שלא בוקר) ולהתחיל לנוע אליו
+    m.update();
+    m.describe();
+    cout << "=====================================================\n" << endl;
+
+
+    cout << "--- TICK 6: Moving to P2 ---" << endl;
+    // כאן היא צריכה לחזור להיות MOVING לכיוון P2
+    m.update();
+    m.describe();
+    cout << "=====================================================\n" << endl;
+
+
+    cout << "--- TICK 7: Moving to P2 ---" << endl;
+    m.update();
+    m.describe();
+    cout << "=====================================================\n" << endl;
+
+
+    cout << "--- TICK 8: Arriving at P2 (Should Dock) ---" << endl;
+    // כאן היא מגיעה ל-P2 ונכנסת ל-DOCKED, והכל מתחיל מחדש
+    m.update();
+    m.describe();
+    cout << "=====================================================\n" << endl;
+
+
+    cout << "--- TICK 9: Executing REFUEL Step ---" << endl;
+    m.update();
+    m.describe();
+    cout << "=====================================================\n" << endl;
+
+
+    cout << "--- TICK 10: Executing DOCK Step ---" << endl;
+    m.update();
+    m.describe();
+    cout << "=====================================================\n" << endl;
+
+
+    cout << "--- TICK 11: Executing DEST Step (Finding Next Port) ---" << endl;
+    // פה היא מפעילה next_step ומוצאת את P3
+    m.update();
+    m.describe();
+    cout << "=====================================================\n" << endl;
+
+
+    cout << "--- TICK 12: Moving to P3 ---" << endl;
+    m.update();
+    m.describe();
+    cout << "=====================================================\n" << endl;
+
+
+
+    // if (argc!=2) {
+    //     cerr <<"Usage:"<<argv[0] << " <file_ports> "<<endl;
+    //     return 1;
+    // }
+    //
+    // const View v(25,2.0,{0,0}); //for AI - not writtem
+    // Controller c(v);
+    // try {
+    //     c.file_read_ports(argv[1]);
+    //     c.simulate();
+    // }
+    // catch (exception& e) {
+    //     cerr << e.what() << endl;
+    //     return 1;
+    // }
+    //
     return 0;
 }
+

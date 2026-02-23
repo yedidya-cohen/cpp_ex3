@@ -53,14 +53,15 @@ double CivilianShip::missing_fuel() const {
 
 void CivilianShip::add_fuel(double f) {
     curr_fuel = f + curr_fuel < max_fuel ? curr_fuel + f : max_fuel;
-    if (state == W_REFUELING) {
-        state = DOCKED;
-    }
+    if (state == W_REFUELING) {state = DOCKED;}
 }
 
 void CivilianShip::refuel() {
     if (state == DOCKED) {
-        if (auto p = docked_port.lock()) {state = W_REFUELING;}
+        if (auto p = docked_port.lock()) {
+
+            state = W_REFUELING// MODIE;
+        }
     }
 }
 

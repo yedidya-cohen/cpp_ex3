@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Cruiser::Cruiser(Data& d, double range, double force): Ship(d), range(range), force(force)
+Cruiser::Cruiser(Data& d, double range, int force): Ship(d), range(range), force(force)
 ,need_to_attack(){}
 //pirates!
 
