@@ -24,6 +24,7 @@ void Freighter::update(){
             CivilianShip::update();
             break;
         case W_REFUELING:
+            update_refueling_state();
             break;
         default:
             cerr<< "Freighter::update reached invalid state";

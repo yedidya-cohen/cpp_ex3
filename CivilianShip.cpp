@@ -8,6 +8,8 @@ CivilianShip::CivilianShip(Data& d, double fuel, double max_fuel, double consump
     : Ship(d),
       curr_fuel(fuel),
       resistance(resistance),
+      refuel_completed(false),
+      refuel_wait_ticks(0),
       max_fuel(max_fuel),
       consumption(consumption),
       next_port(),docked_port() {}
@@ -21,6 +23,7 @@ bool CivilianShip::dock_at(shared_ptr<Port> p) { //check who is calling than cha
         position = p->get_position();
         state = DOCKED;
         next_port = p;
+        docked_port = p;
         curr_speed = 0;
         return true;
     }
@@ -53,15 +56,30 @@ double CivilianShip::missing_fuel() const {
 
 void CivilianShip::add_fuel(double f) {
     curr_fuel = f + curr_fuel < max_fuel ? curr_fuel + f : max_fuel;
-    if (state == W_REFUELING) {state = DOCKED;}
+    if (state == W_REFUELING) {refuel_completed = true;}
 }
 
 void CivilianShip::refuel() {
     if (state == DOCKED) {
         if (auto p = docked_port.lock()) {
-
-            state = W_REFUELING// MODIE;
+            p->add_to_queue(dynamic_pointer_cast<CivilianShip>(Model::get_instance().get_ship_by_name(name)));
+            state = W_REFUELING;
+            refuel_completed = false;
+            refuel_wait_ticks = 1;
         }
+    }
+}
+
+
+void CivilianShip::update_refueling_state() {
+    if (state != W_REFUELING) {return;}
+    if (refuel_wait_ticks > 0) {
+        --refuel_wait_ticks;
+        return;
+    }
+    if (refuel_completed) {
+        state = DOCKED;
+        refuel_completed = false;
     }
 }
 

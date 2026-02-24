@@ -38,6 +38,7 @@ void Patrol::update() {
             my_3_steps();
             break;
         case  W_REFUELING:
+            update_refueling_state();
             break;
         case STOPPED:
             state = MOVING;
