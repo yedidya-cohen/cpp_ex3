@@ -24,7 +24,10 @@ void Freighter::update(){
             CivilianShip::update();
             break;
         case W_REFUELING:
-            update_refueling_state();
+            if (refuel_completed) {
+                state = DOCKED;
+                refuel_completed = false;
+            }
             break;
         default:
             cerr<< "Freighter::update reached invalid state";

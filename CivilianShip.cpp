@@ -4,12 +4,11 @@
 
 using namespace std;
 
-CivilianShip::CivilianShip(Data& d, double fuel, double max_fuel, double consumption, double resistance)
+CivilianShip::CivilianShip(Data& d, double fuel, double max_fuel, double consumption, int resistance)
     : Ship(d),
       curr_fuel(fuel),
       resistance(resistance),
       refuel_completed(false),
-      refuel_wait_ticks(0),
       max_fuel(max_fuel),
       consumption(consumption),
       next_port(),docked_port() {}
@@ -65,21 +64,7 @@ void CivilianShip::refuel() {
             p->add_to_queue(dynamic_pointer_cast<CivilianShip>(Model::get_instance().get_ship_by_name(name)));
             state = W_REFUELING;
             refuel_completed = false;
-            refuel_wait_ticks = 1;
         }
-    }
-}
-
-
-void CivilianShip::update_refueling_state() {
-    if (state != W_REFUELING) {return;}
-    if (refuel_wait_ticks > 0) {
-        --refuel_wait_ticks;
-        return;
-    }
-    if (refuel_completed) {
-        state = DOCKED;
-        refuel_completed = false;
     }
 }
 

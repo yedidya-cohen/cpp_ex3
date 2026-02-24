@@ -38,7 +38,12 @@ void Patrol::update() {
             my_3_steps();
             break;
         case  W_REFUELING:
-            update_refueling_state();
+            //update_refueling_state();
+            if (refuel_completed) {//we got fuel last tick (not now - because port update after ship)
+                state =DOCKED;
+                refuel_completed = false;
+                patrolState = DOCK;
+            }
             break;
         case STOPPED:
             state = MOVING;

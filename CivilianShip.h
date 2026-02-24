@@ -7,7 +7,7 @@
 class CivilianShip : public Ship
 {
 public:
-    explicit CivilianShip(Data& d,double fuel, double max_fuel, double consumption, double resistance);
+    explicit CivilianShip(Data& d,double fuel, double max_fuel, double consumption, int resistance);
     ~CivilianShip() override = default; //abstract
 
 
@@ -60,7 +60,6 @@ protected:
     double curr_fuel, max_fuel, consumption;;
     int resistance;
     bool refuel_completed;
-    int refuel_wait_ticks;
     std::weak_ptr<Port> next_port, docked_port; //next - target - always exsist, docekd - nullptr unless we in port
 
     static bool is_on_segment(Point start, Point end, Point port);
