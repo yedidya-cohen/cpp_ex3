@@ -205,11 +205,7 @@ void Model::attack(const string &ship_name, const string &ship_target) {
 void Model::refuel(const string &ship_name) {
     if (auto s= get_ship_by_name(ship_name)){
         if (s->get_state() == Ship::ShipState::DOCKED){
-            auto p = s->get_docked_port();
-            if (p) {
-                p->add_to_queue(s);
-                s->refuel();
-            }
+            s->refuel();
         }
     }
     else {cerr << "Cannot find ship by name " << ship_name;}

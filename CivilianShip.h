@@ -27,6 +27,9 @@ public:
     std::shared_ptr<Port> get_docked_port() const;
 
 
+
+    void update_refueling_state();
+
     void set_destination(std::weak_ptr<Port> p, double speed);
     //   a - start, b- end
     //   double cross_product = (cx - ax) * (by - ay) - (cy - ay) * (bx - ax);
@@ -56,6 +59,8 @@ public:
 protected:
     double curr_fuel, max_fuel, consumption;;
     int resistance;
+    bool refuel_completed;
+    int refuel_wait_ticks;
     std::weak_ptr<Port> next_port, docked_port; //next - target - always exsist, docekd - nullptr unless we in port
 
     static bool is_on_segment(Point start, Point end, Point port);
