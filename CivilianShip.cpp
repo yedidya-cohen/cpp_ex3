@@ -86,13 +86,16 @@ void CivilianShip::set_destination(weak_ptr<Port> p, double speed) {
      next_port = p; //setting the target
 }
 
-bool CivilianShip::is_on_segment(Point start, Point end, Point port) { //TODO: comment
-    //checks if a point (port) is on the way from start to end in a direct line
+// Returns true if port lies on the straight line segment from start to end
+// used to detect cases where the ship moves past a port in one step without landing exactly on it
+bool CivilianShip::is_on_segment(Point start, Point end, Point port) {
+    // checks that port is within the bounding box of the segment
+
     bool in_box_x = port.x >= std::min(start.x, end.x) && port.x <= std::max(start.x, end.x);
     bool in_box_y = port.y >= std::min(start.y, end.y) && port.y <= std::max(start.y, end.y);
     if (!in_box_x || !in_box_y) return false;
 
+    //checks steep using cross product =0
     double cross_product = (port.y - start.y) * (end.x - start.x) - (port.x - start.x) * (end.y - start.y);
-
     return std::abs(cross_product) < 0.1;
 }
