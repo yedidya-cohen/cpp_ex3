@@ -8,61 +8,34 @@ class CivilianShip : public Ship
 {
 public:
     explicit CivilianShip(Data& d,double fuel, double max_fuel, double consumption, int resistance);
-    ~CivilianShip() override = default; //abstract
+    ~CivilianShip() override = 0; //abstract
 
 
-    bool dock_at(std::shared_ptr<Port> p);
-    virtual void update();
+    bool dock_at(std::shared_ptr<Port>& p); // dock_at cmd
+    void update() override; // update 1hr time
 
-    double missing_fuel() const;
-    void add_fuel(double f);
+    double missing_fuel() const; // amount of fuel we can refuel
+    void add_fuel(double f); // refueling the ship
+    void refuel(); // add to queue of port for refuel if we docked there
 
-    void refuel();
+    void been_attacked(bool win_lose); //if we got attacked when true means we won
 
-    void been_attacked(bool win_lose); //true mean win
-    virtual void describe() const = 0;
+    void describe() const override = 0; //details of the ship
 
-    double get_resistance() const;
+    double get_resistance() const; // returns resistance
 
-    std::shared_ptr<Port> get_docked_port() const;
+    std::shared_ptr<Port> get_docked_port() const; // returns current port
 
+    void set_destination(std::weak_ptr<Port> p, double speed); //set next mission of destination
 
-
-    void update_refueling_state();
-
-    void set_destination(std::weak_ptr<Port> p, double speed);
-    //   a - start, b- end
-    //   double cross_product = (cx - ax) * (by - ay) - (cy - ay) * (bx - ax);
-    //   bool is_withX = (cx >= std::min(ax, bx)) && (cx <= std::max(ax, bx));
-    //   bool is_WithY = (cy >= std::min(ay, by)) && (cy <= std::max(ay, by));
-
-
-    // void attacked(bool win_lose);
-    // virtual void set_destination(const Port& dest, double speed) = 0;
-    // virtual void refuel() = 0;
-    // double fuel_missing() {return  max_fuel - curr_fuel;}
-    //
-    // double get_current_fuel() const { return curr_fuel;}
-    // double get_max_tank() const {return max_fuel;}
-    // double get_consumption_rate() {return consumption;}
-    //
-    // void update_fuel(){
-    //     curr_fuel -= consumption;
-    //     if(curr_fuel<=0)
-    //     {
-    //         state = ShipState::DEAD;
-    //         curr_speed = 0;
-    //         angle = 0;
-    //     }
-    // }
 
 protected:
-    double curr_fuel, max_fuel, consumption;;
-    int resistance;
+    double curr_fuel, max_fuel, consumption;; // current amount of fuel, max amount of fuel we can hold, how much we use per hour
+    int resistance;  // how strong our ship against attackes
     bool refuel_completed;
-    std::weak_ptr<Port> next_port, docked_port; //next - target - always exsist, docekd - nullptr unless we in port
+    std::weak_ptr<Port> next_port, docked_port; // next mission , if we are docked right now we hold the port
 
-    static bool is_on_segment(Point start, Point end, Point port);
+    static bool is_on_segment(Point start, Point end, Point port); // checks if we passed the port on the way
 };
 
 

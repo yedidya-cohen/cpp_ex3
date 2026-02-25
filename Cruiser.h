@@ -2,6 +2,7 @@
 #define EX3_CRUISER_H
 
 #include "Ship.h"
+#include <memory>
 
 class CivilianShip;
 
@@ -9,21 +10,17 @@ class CivilianShip;
 class Cruiser: public Ship{
 public:
     Cruiser(Data& d,double range,int force);
-    ~Cruiser() = default;
-    Cruiser(const Cruiser& other) = default;
-    Cruiser& operator=(const Cruiser& other) = default;
-
 
     void update() override;
     void describe() const override;
 
-    void attack(std::weak_ptr<CivilianShip> s);
+    void attack(std::weak_ptr<CivilianShip> s); //attacking ship
     double get_force() const;
 
 private:
-    double range;
-    int force;
-    std::string need_to_attack;
+    double range; // firing range
+    int force; // how strong we are
+    std::string need_to_attack; // ship we are goona try to attack
 };
 
 

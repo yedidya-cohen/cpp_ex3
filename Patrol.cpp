@@ -3,6 +3,7 @@
 #include "Port.h"
 #include <assert.h>
 #include <memory>
+#include <cmath>
 
 using namespace std;
 
@@ -11,43 +12,42 @@ Patrol::Patrol(Data& d,double fuel, double max_fuel, double consumption, double 
           patrolState(NONE),
           first_port(){
 }
-
+//what to print
 void Patrol::describe() const {
     auto t = next_port.lock();
     auto d = docked_port.lock();
     const string target_name = t ? t->get_name() : (d ? d->get_name() : "None");
-    std::cout << "Patrol " << name << " at "  << position  <<" state "<<state <<" fuel: "<< curr_fuel << " resistance: " << resistance
+    std::cout << "Patrol " << name << " at "  << position  <<" fuel: "<< curr_fuel << " resistance: " << resistance
     << " Moving to " << target_name << " on course "<< to_degrees(rad_angle)<<" deg , speed "<<curr_speed<< " nm/hr"<<endl;
 }
-
+//main function - each tick happen
 void Patrol::update() {
     switch (state) {
-        case DEAD:
+        case DEAD: //do nothing
             return;
         case MOVING:
-            CivilianShip::update();// 1 hour pass
-            if (state == DOCKED) {
-                patrolState = REFUEL;
+            CivilianShip::update();// 1 hour pass - we move and check if we arrive
+            if (state == DOCKED) { //if we arrive
+                patrolState = REFUEL; //now wait to refuel
                 auto ptr_port = docked_port.lock();
-                assert(ptr_port != nullptr);//
-                visited.push_back(ptr_port->get_name());
+                visited.push_back(ptr_port->get_name()); //we tell we been here
             }
             break;
         case DOCKED:
-            //my inner state - 3 steps
+            //my inner state - 3 steps, to track this
             my_3_steps();
             break;
-        case  W_REFUELING:
-            //update_refueling_state();
-            if (refuel_completed) {//we got fuel last tick (not now - because port update after ship)
-                state =DOCKED;
-                refuel_completed = false;
-                patrolState = DOCK;
+        case  W_REFUELING: //wait for refuel from port - come on refuel me
+
+            if (refuel_completed) {//we got fuel last tick (not now - because port update after ship - we see it after)
+                state = DOCKED; //go back to dock and continue with your travel - goodluck ith the sailor going around
+                refuel_completed = false; //inizilaize for next
+                patrolState = DOCK; //inner state
             }
             break;
-        case STOPPED:
+        case STOPPED: //only when we attack or at start - we waste a tick and continue to move
             state = MOVING;
-            if (next_port.expired()) {next_step();}
+            if (next_port.expired()) {next_step();} //there is no next_port - no one put to us something - continue to the nearest one
             break;
         default:
             cerr << "Patrol::update reached invalid ShipState";
@@ -56,22 +56,21 @@ void Patrol::update() {
 }
 
 void Patrol::next_step() {
+    //all ports
     std::vector<std::weak_ptr<Port>> all_ports_weak = Model::get_instance().get_ports();
 
-    // 2. Setup variables to track the best option found so far
-    double min_dist = 1e9;                   // Infinity
-    std::shared_ptr<Port> best_candidate = nullptr; // Starts empty
+    //  variables to track the best option found so far
+    double min_dist = 1e9;                   // big
+    std::shared_ptr<Port> best_candidate = nullptr; // starts empty
 
-    // 3. Loop through all ports in the system
+    // all ports in the system
     for (auto& wp : all_ports_weak) {
-        // LOCK the weak pointer to verify it exists and get access
         std::shared_ptr<Port> sp = wp.lock();
-
-        if (!sp) continue; // Skip if the port no longer exists (safety check)
+        if (!sp) continue; // Skip if the port no longer exists safety
 
         std::string p_name = sp->get_name();
 
-        // CHECK A: Is this port in my 'visited' list?
+        // is this port in my visited
         bool is_visited = false;
         for (const auto& v_name : visited) {
             if (p_name == v_name) {
@@ -79,51 +78,45 @@ void Patrol::next_step() {
                 break;
             }
         }
-        if (is_visited) continue; // Skip visited ports
+        if (is_visited) continue; // skip -we been there
 
-        // CHECK B: Is this the port I am CURRENTLY at?
-        // (Distance is 0, so we must skip it, otherwise we never leave)
-        // if (sp->get_position() == this->get_position()) continue;
-        //
-        // CHECK C: Calculate Distance
+        // is this the port I am at?
+        // distance is 0, so we must skip it, or we never leave
+        if (sp->get_position() == this->get_position()) continue;
+
+        //Calculate Distance
         double d = dist(this->get_position(), sp->get_position());
 
-        // CHECK D: Compare to find the best candidate
-        if (d < min_dist) {
-            // Found a strictly closer port
+        if (d<min_dist) {
+            // Found a closer port
             min_dist = d;
             best_candidate = sp;
         }
-        else if (fabs(d-min_dist) < 1e-6) {
-            // Tie-Breaker: Distance is equal, check Alphabetical Order
-            // Assignment Requirement: "choose the first one alphabetically"
+        else if (fabs(d-min_dist) < 1e-6) { //same distance - double so basically the same
+            // distance is equal, check lex order
             if (best_candidate == nullptr || p_name < best_candidate->get_name()) {
                 best_candidate = sp;
             }
         }
     }
 
-    // 4. Action: Decide where to go
+    // decide where to go
     if (best_candidate != nullptr) {
-        // Scenario A: Found a valid next target
-        // We do NOT add to 'visited' yet (only on arrival), but we set the course.
-        // Assuming set_destination takes a shared_ptr and speed
         if (first_port.empty()) {first_port = best_candidate->get_name();}
         set_destination(best_candidate,curr_speed);
         next_port = best_candidate;
     }
     else {
-        // Scenario B: No unvisited ports left (Vector empty or all visited)
-        // Check if we are already back at the start
+        // No unvisited ports left
+        // check if we are already back at the start
         auto start_port_sp = Model::get_instance().get_port_by_name(first_port);
 
         if (this->get_position() == start_port_sp->get_position()) {
-            // Mission Complete
-            //is_patrolling = false; // Turn off auto-pilot
-            stop();
-            state = DEAD;
+            // mission complete
+            // Turn off auto-pilot
+            state = DEAD; //show like this trip over
         } else {
-            // Loop finished, but we must return to base
+            // finished, but we must return to base
             set_destination(start_port_sp, curr_speed);
             next_port = start_port_sp;
         }
@@ -133,16 +126,17 @@ void Patrol::next_step() {
 void Patrol::my_3_steps() {
     //enum PatrolState {W_REFUEL=0, REFUEL=1,DOCK=2,DEST=3,NONE=4};
     switch (patrolState) {
+        //first tick - refuel
         case REFUEL:
             refuel();
-            patrolState = DOCK;
+            patrolState = DOCK; //move to dock
             break;
-        case PatrolState::DOCK:
+        case PatrolState::DOCK: //waste tick when thw sailor are parting
             patrolState = DEST;
             break;
-        case DEST:
+        case DEST: //decide where to go
             state = MOVING;
-            if (next_port.expired()) {next_step();}
+            if (next_port.expired()) {next_step();} //if someone put next port we go to where he told us
             patrolState = NONE;
             break;
         default:
@@ -150,5 +144,3 @@ void Patrol::my_3_steps() {
             break;
     }
 }
-
-// (M,N) -> (D,W_F) -> (W_re,D) -> ...->(D,D) ->(D,Dest) -> (M,N)

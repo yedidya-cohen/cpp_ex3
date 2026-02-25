@@ -1,8 +1,5 @@
 #ifndef EX3_CONTROLLER_H
 #define EX3_CONTROLLER_H
-#include <iostream>
-#include <map>
-#include <functional>
 
 #include "View.h"
 #include "Model.h"
@@ -12,10 +9,11 @@
 class Controller {
 public:
     Controller(const View& v):view(v){}
-    void simulate();
+    void simulate(); // main loop for input
 
-    void file_read_ports(const std::string& file_name);
+    void file_read_ports(const std::string& file_name); // reading port file
 private:
+    //defaults for constructors of the ships
     static constexpr double FREIGHTER_MAX_SPEED = 40.0;
     static constexpr double FREIGHTER_MAX_FUEL = 500000.0;
     static constexpr double FREIGHTER_CONSUMPTION = 1000.0;
@@ -26,7 +24,9 @@ private:
     static constexpr double PATROL_MAX_FUEL = 900000.0;
     static constexpr double PATROL_CONSUMPTION = 2000.0;
 
-    void ship_commands(const std::string& ship_name);
+
+    void ship_commands(const std::string& ship_name); // for commands 
+
     //Model
     void status() const;
     void go() const;

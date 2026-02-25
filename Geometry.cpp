@@ -5,17 +5,19 @@
 using namespace std;
 
 const double pi = 2. * atan2(1., 0.);
+//convert the angle that given to radiant and save
 double to_radians(double theta_d) {
     theta_d = 90-theta_d;
     return theta_d * pi / 180.0;
 }
 
+//convert radiant to degree - what we define - 0 is up 90 is x
 double to_degrees(double theta_r)
 {
     double d = 90 - (theta_r * 180.0 / pi);
     return d < 0 ? d + 360 : d;
-
 }
+
 // construct a Cartesian_vector from a Polar_vector
 Cartesian_vector::Cartesian_vector(const Polar_vector& pv) {
     delta_x = pv.r * cos(pv.theta);
@@ -55,8 +57,7 @@ void Polar_vector::operator=(const Cartesian_vector& cv)
 }
 
 Point::Point(double x, double y) : x(x), y(y)
-{
-}
+{}
 
 Point::Point()
 {
@@ -85,18 +86,16 @@ ostream& operator<<(ostream& o, const Point& p) {
 }
 
 Point calculate_next_pos(Point start, double angle_rad, double speed) {
-
-
-    // 2. Create a polar vector for the movement
-    // Since time is exactly 1 hour, distance = speed * 1
+    // create a polar vector for the movement
+    // since time is exactly 1 hour, distance = speed * 1
     Polar_vector move_vector;
     move_vector.r = speed;
     move_vector.theta = angle_rad;
 
-    // 3. Convert to Cartesian to get x/y offsets
+    // convert to cartesian to get x/y offsets
     Cartesian_vector delta(move_vector);
 
-    // 4. Apply the offset to the starting point
+    // apply the offset to the starting point
     Point next_p;
     next_p.x = start.x + delta.delta_x;
     next_p.y = start.y + delta.delta_y;

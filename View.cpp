@@ -7,18 +7,19 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include "Model.h"
 
 using namespace std;
 
 View::View(int grid, double sc, Point org) : grid_size(grid), scale(sc), origin(org) {}
-//need to be 6- 30 if not cerr
-void View::set_size(int size) {
+
+
+void View::set_size(int size) { //setting size of view between 6 to 30
     if (size>grid_max || size< grid_min){cerr<<"wrong size, should be between 6 and 30\n"; return;}
     grid_size = size;
 }
 
 void View::set_scale(int sc) {
-
     scale = sc;
 }
 
@@ -31,7 +32,7 @@ void View::set_default() {
     scale = 2.0;
     origin = Point(0, 0);
 }
-
+//main function of view
 void View::draw() const {
     cout << "Display size: " << grid_size << ", scale: " << fixed << setprecision(2) << scale << ", origin: ";
     origin.print();
@@ -39,10 +40,10 @@ void View::draw() const {
 
     // Initialize grid with ". "
     vector<vector<string>> grid(grid_size, vector<string>(grid_size, ". "));
-
+    //for convient
     auto& model = Model::get_instance();
     
-    // Helper to mark entities on grid
+    // helper to mark entities on grid - lambda very good
     auto mark_on_grid = [&](const string& name, Point p) {
         int ix = static_cast<int>(floor((p.x - origin.x) / scale));
         int iy = static_cast<int>(floor((p.y - origin.y) / scale));
@@ -52,15 +53,8 @@ void View::draw() const {
         }
     };
 
-    // We need access to the vectors in Model. 
-    // Assuming Model provides accessors or we use the logic from Model::status/update
-    // Since Model.h shows private vectors, in a real scenario we'd need getters.
-    // For this implementation, we follow the pattern of mapping entities.
-    
-    // Note: The actual iteration over ships/pirates/ports requires Model to expose them.
-    // Based on Model.h, they are private. Assuming friend class or getters exist:
-    // For the sake of completing the View logic:
-
+    //take all the ships,port from model who is singleTone
+    //each ship mark it based on the lambda we did before
     for (const auto& s : model.get_ships()) {
         if (const auto l = s.lock()){mark_on_grid(l->get_name(), l->get_position());}
     }
@@ -73,24 +67,25 @@ void View::draw() const {
     }
 
 
-    // Drawing the grid from top (max Y) to bottom
+    // Drawing the grid from top to bottom
     for (int j = grid_size - 1; j >= 0; --j) {
         if (j % 3 == 0) {
-            cout << setw(4) << left << static_cast<int>(origin.y + j * scale);
+            cout << setw(4) << left << static_cast<int>(origin.y + j * scale); //padding
         } else {
             cout << "    ";
         }
+        //cout the ship/'.'
         for (int i = 0; i < grid_size; ++i) {
             cout << grid[j][i];
         }
         cout << endl;
     }
 
-    // Drawing X axis labels
+    // Drawing x labels
     cout << "    ";
     for (int i = 0; i < grid_size; ++i) {
         if (i % 3 == 0) {
-            cout << setw(6) << left << static_cast<int>(origin.x + i * scale);
+            cout << setw(6) << left << static_cast<int>(origin.x + i * scale); //padding
         }
     }
     cout << endl;
